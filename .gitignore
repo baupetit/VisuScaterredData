@@ -1,0 +1,27 @@
+# dossiers
+build
+
+# fichier de sauvegarde Emacs
+*~
+
+#
+*.swp
+*.core
+*.o
+
+# Fichiers générés par gcov
+*.gcov
+*.gcno
+*.gcda
+
+# pour les utilisateurs de mac
+._*
+.DS_Store
+
+# pour latex
+*.dvi
+*.aux
+*.toc
+*.log
+
+
