@@ -1,0 +1,9 @@
+TP      : Visualisation scientifique
+AUTHORS : Benjamin Aupetit, Nicolas Cousin
+
+Sources:
+   main.c         : base program, call necessary function
+   interpolate.c  : interpolation functions
+   output.c       : write data to vtk files
+   data.c         : generate data set, enventually read them from files
+   types.h        : types used by the application
