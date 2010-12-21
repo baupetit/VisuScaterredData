@@ -11,6 +11,7 @@
 int main( int argc, char** argv )
 {
 	ScaterredData2D data;
+	SampledData2D result;
 	data.nbSamples = 10;
 	data.scaterred = malloc(10*sizeof(Data2D));
 	int i;
@@ -29,10 +30,11 @@ int main( int argc, char** argv )
 		       );	
 	}
 
-	computeBoundingBox(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
+	multiQuadricInterpolation(DEFAULT_GRID,data,&result);
+	//computeBoundingBox(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
 
-	printf("Grid Min : %f %f\n",data.obb.xmin,data.obb.ymin);
-	printf("Grid Max : %f %f\n",data.obb.xmax,data.obb.ymax);
+	printf("Grid Min : %f %f\n",result.obb.xmin,result.obb.ymin);
+	printf("Grid Max : %f %f\n",result.obb.xmax,result.obb.ymax);
 
 	return 0;
 } 
