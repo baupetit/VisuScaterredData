@@ -4,49 +4,103 @@
  *           Nicolas  Cousin
  */
 
+#ifndef TYPE_H
+#define TYPE_H
+
+/**
+ * Grid Type
+ * DEFAULT_GRID : Normal Bounding Box
+ * EXTENDED_GRID : 3 times the size of the normal bounding box in each direction
+ */
+enum _GridType
+{
+	DEFAULT_GRID,
+	EXTENDED_GRID
+};
+
+typedef enum _GridType GridType;
+
 typedef double real;
 
 /**
  * BoundingBox
  */
-struct _BoundingBox
+struct _BoundingBox2D
 {
 	real xmin, xmax, ymin, ymax;
 };
 
+struct _BoundingBox3D
+{
+	real xmin, xmax, ymin, ymax, zmin, zmax;
+};
+
+typedef struct _BoundingBox2D BoundingBox2D;
+typedef struct _BoundingBox3D BoundingBox3D;
+
 /** Data :
     hold the coordinates of scaterred data
 */
-struct _Data 
+struct _Data2D 
 {
 	real x;
 	real y;
 	real z;
 };
 
-typedef struct _Data Data;
+struct _Data3D 
+{
+	real x;
+	real y;
+	real z;
+	real w;
+};
+
+typedef struct _Data2D Data2D;
+typedef struct _Data3D Data3D;
 
 /** Scaterred data structure 
  * hold scaterred data info
  */
-struct _ScaterredData
+struct _ScaterredData2D
 {
-	int         nbSamples;
-	Data       *scaterred;
-	BoundingBox obb;
+	int           nbSamples;
+	Data2D        *scaterred;
+	BoundingBox2D obb;
 };
 
-typedef struct _ScaterredData ScaterredData;
+struct _ScaterredData3D
+{
+	int           nbSamples;
+	Data3D        *scaterred;
+	BoundingBox3D obb;
+};
+
+typedef struct _ScaterredData2D ScaterredData2D;
+typedef struct _ScaterredData3D ScaterredData3D;
+
 
 /** SampledData 
  * hold sampled data over the area of the bouding box
  */
-struct _SampledData
+struct _SampledData2D
 {
-	real        width;
-	real        height;
-	BoundingBox obb;
-	real       *sampledValue;
+	int           width;
+	int           height;
+	BoundingBox2D obb;
+	real          *sampledValue;
 };
 
-typedef struct _SampledData SampledData;
+struct _SampledData3D
+{
+	int           width;
+	int           height;
+	int           depth;
+	BoundingBox3D obb;
+	real          *sampledValue;
+};
+
+typedef struct _SampledData2D SampledData2D;
+typedef struct _SampledData3D SampledData3D;
+
+#endif //TYPE_H
