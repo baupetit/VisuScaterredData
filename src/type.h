@@ -23,6 +23,19 @@ typedef enum _GridType GridType;
 typedef double real;
 
 /**
+ * Matrix
+ */
+
+struct _Matrix
+{
+	int width;
+	int height;
+	real *values;
+};
+
+typedef struct _Matrix Matrix;
+
+/**
  * BoundingBox
  */
 struct _BoundingBox2D
