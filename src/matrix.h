@@ -3,8 +3,17 @@
 
 #include "type.h"
 
-Matrix* multiply(Matrix matrixA, Matrix matrixB);
 void deallocateMatrix(Matrix* matrix);
-void allocateMatrix(Matrix* matrix, int width, int height);
+Matrix* allocateMatrix(int width, int height);
+
+Matrix* multiply(Matrix matrixA, Matrix matrixB);
+Matrix* copyMatrix(Matrix mat);
+Matrix* identity(int size);
+void printMatrix(Matrix matrix);
+
+void LUfacto(Matrix mat, Matrix *L, Matrix *U);
+Matrix* forwardLU(Matrix L, Matrix b);
+Matrix* backwardLU(Matrix U, Matrix Y);
+Matrix* invert(Matrix matrix);
 
 #endif //MATRIX_H

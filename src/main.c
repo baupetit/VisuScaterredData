@@ -31,11 +31,10 @@ int main( int argc, char** argv )
 		       );	
 	}
 
-	Matrix *a,*b;
-	a = malloc(sizeof(Matrix));
-	b = malloc(sizeof(Matrix));
-	allocateMatrix(a,1,2);
-	allocateMatrix(b,2,1);
+	//Matrix *a,*b;
+	/*
+	a = allocateMatrix(1,2);
+	b = allocateMatrix(2,1);
 
 	(*a).values[0]=1;
 	(*a).values[1]=10;
@@ -45,6 +44,17 @@ int main( int argc, char** argv )
 	printMatrix(*a);
 	printMatrix(*b);
 	printMatrix(*multiply(*a,*b));
+	*/
+
+	Matrix *mat = allocateMatrix(2,2);
+	(*mat).values[0]=1;
+	(*mat).values[1]=3;
+	(*mat).values[2]=1;
+	(*mat).values[3]=7;
+
+	Matrix *invMat = invert(*mat);
+	printMatrix(*mat);
+	printMatrix(*invMat);
 
 	multiQuadricInterpolation(DEFAULT_GRID,data,&result);
 	//computeBoundingBox(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
