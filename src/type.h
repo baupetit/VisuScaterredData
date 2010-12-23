@@ -4,49 +4,71 @@
  *           Nicolas  Cousin
  */
 
+#ifndef TYPE_H
+#define TYPE_H
+
 typedef double real;
+
+/** data input type
+ * 2D plan or 3D
+ */
+enum data_type
+{
+	DATA_TYPE_UNKNOW, /** data type not defined */
+	DATA_TYPE_2DPLAN, /* 2D plan */
+	DATA_TYPE_3D      /* 3D      */
+};
 
 /**
  * BoundingBox
  */
-struct _BoundingBox
+struct _boundingbox
 {
-	real xmin, xmax, ymin, ymax;
+	real xmin, xmax, ymin, ymax, zmin, zmax;
 };
+
+typedef struct _boundingbox boundingbox;
 
 /** Data :
     hold the coordinates of scaterred data
 */
-struct _Data 
+struct _data 
 {
-	real x;
-	real y;
-	real z;
+	real x;    /* coord x */
+	real y;    /* coord y */
+	real z;    /* coord z */
+	real w;    /* value associted with the data */
 };
 
-typedef struct _Data Data;
+typedef struct _data data;
 
 /** Scaterred data structure 
  * hold scaterred data info
  */
-struct _ScaterredData
+struct _scaterred_data
 {
 	int         nbSamples;
-	Data       *scaterred;
-	BoundingBox obb;
+	data       *scaterred;
+	boundingbox obb;
 };
 
-typedef struct _ScaterredData ScaterredData;
+typedef struct _scaterred_data scaterred_data;
 
 /** SampledData 
  * hold sampled data over the area of the bouding box
  */
-struct _SampledData
+struct _sampled_data
 {
 	real        width;
 	real        height;
-	BoundingBox obb;
-	real       *sampledValue;
+	real        depth;
+	real        spacing_X;
+	real        spacing_Y;
+	real        spacing_Z;
+	boundingbox obb;
+	real       *sampled_value;
 };
 
-typedef struct _SampledData SampledData;
+typedef struct _sampled_data sampled_data;
+
+#endif
