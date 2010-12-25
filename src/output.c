@@ -5,9 +5,9 @@
  */
 
 #include "output.h"
-#include "stdio.h"
+#include <stdio.h>
 
-void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* boundMax, float **data)
+void ecrireFichierVTK(char *filePath, SampledData2D data)
 {
 	FILE* file;
 
@@ -19,19 +19,18 @@ void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* bo
 		fprintf(file,"DATASET STRUCTURED_POINTS\n");
 
 		// DIMENSIONS
-		fprintf(file,"DIMENSIONS %i %i %i\n", resolution, resolution, resolution);
+		fprintf(file,"DIMENSIONS %i %i 1\n", data.width, data.height);
 
 		// SPACING
-		float spacingX = (boundMax[0] - boundMin[0]) / ((float)(resolution-1));
-		float spacingY = (boundMax[1] - boundMin[1]) / ((float)(resolution-1));
-		float spacingZ = (boundMax[2] - boundMin[2]) / ((float)(resolution-1));
-		fprintf(file,"SPACING %f %f %f\n",spacingX,spacingY,spacingZ);
+		real spacingX = (data.obb.xmax - data.obb.xmin) / (data.width-1);
+		real spacingY = (data.obb.ymax - data.obb.ymin) / (data.height-1);
+		fprintf(file,"SPACING %f %f 0\n",spacingX,spacingY);
 
 		// ORIGIN
-		fprintf(file,"ORIGIN %f %f %f\n",boundMin[0],boundMin[1],boundMin[2]);
+		fprintf(file,"ORIGIN %f %f 0\n",data.obb.xmin,data.obb.ymin);
 
 		// POINT_DATA
-		fprintf(file,"POINT_DATA %i\n",resolution*resolution*resolution);
+		fprintf(file,"POINT_DATA %i\n",data.width*data.height);
 
 		// TYPE DES DONNES : float
 		fprintf(file,"SCALARS RTData float\n");
@@ -40,8 +39,8 @@ void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* bo
 
 		// DONNEES
 		int i;
-		for (i = 0; i < resolution * resolution * resolution; ++i){
-			fprintf(file,"%f ", data[i][3]);
+		for (i = 0; i < data.width*data.height; ++i){
+			fprintf(file,"%f ", data.sampledValue[i]);
 		}
 
 		// FERMETURE FICHIER
@@ -51,4 +50,5 @@ void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* bo
     		return;
 	}
 }
+
 
