@@ -38,8 +38,8 @@ int main( int argc, char** argv )
 	result.width = 5;
 	result.height = 5;
 
-	multiQuadricInterpolation(DEFAULT_GRID,data,&result);
-	ecrireFichierVTK("lol.vtk", result);
+	multiQuadricInterpolation2D(DEFAULT_GRID,data,&result);
+	ecrireFichierVTK2D("lol.vtk", result);
 
 	// ON FREE TOUT
 	free(data.scaterred);

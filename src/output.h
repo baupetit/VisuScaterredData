@@ -9,6 +9,7 @@
 
 #include "type.h"
 
-void ecrireFichierVTK(char *filePath, SampledData2D data);
+void ecrireFichierVTK2D(char *filePath, SampledData2D data);
+void ecrireFichierVTK3D(char *filePath, SampledData3D data);
 
 #endif //OUTPUT_H

@@ -10,7 +10,9 @@
 #include "data.h"
 #include "matrix.h"
 
-void multiQuadricInterpolation(GridType type, ScaterredData2D data, SampledData2D *result);
+void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledData2D *result);
+
+void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledData3D *result);
 
 
 
