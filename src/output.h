@@ -4,9 +4,9 @@
  *           Nicolas  Cousin
  */
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef OUTPUT_H
+#define OUTPUT_H
 
 void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* boundMax, float **data);
 
-#endif //FILE_H
+#endif //OUTPUT_H

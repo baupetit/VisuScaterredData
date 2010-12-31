@@ -7,6 +7,19 @@
 #ifndef TYPE_H
 #define TYPE_H
 
+/**
+ * Grid Type
+ * DEFAULT_GRID : Normal Bounding Box
+ * EXTENDED_GRID : 3 times the size of the normal bounding box in each direction
+ */
+enum _GridType
+{
+	DEFAULT_GRID,
+	EXTENDED_GRID
+};
+
+typedef enum _GridType GridType;
+
 typedef double real;
 
 /** data input type
@@ -20,55 +33,96 @@ enum data_type
 };
 
 /**
+ * Matrix
+ */
+
+struct _Matrix
+{
+	int width;
+	int height;
+	real *values;
+};
+
+typedef struct _Matrix Matrix;
+
+/**
  * BoundingBox
  */
-struct _boundingbox
+struct _BoundingBox2D
 {
 	real xmin, xmax, ymin, ymax, zmin, zmax;
 };
 
-typedef struct _boundingbox boundingbox;
+struct _BoundingBox3D
+{
+	real xmin, xmax, ymin, ymax, zmin, zmax;
+};
+
+typedef struct _BoundingBox2D BoundingBox2D;
+typedef struct _BoundingBox3D BoundingBox3D;
 
 /** Data :
     hold the coordinates of scaterred data
 */
-struct _data 
+struct _Data2D 
 {
-	real x;    /* coord x */
-	real y;    /* coord y */
-	real z;    /* coord z */
-	real w;    /* value associted with the data */
+	real x;
+	real y;
+	real z;
 };
 
-typedef struct _data data;
+struct _Data3D 
+{
+	real x;
+	real y;
+	real z;
+	real w;
+};
+
+typedef struct _Data2D Data2D;
+typedef struct _Data3D Data3D;
 
 /** Scaterred data structure 
  * hold scaterred data info
  */
-struct _scaterred_data
+struct _ScaterredData2D
 {
-	int         nbSamples;
-	data       *scaterred;
-	boundingbox obb;
+	int           nbSamples;
+	Data2D        *scaterred;
+	BoundingBox2D obb;
 };
 
-typedef struct _scaterred_data scaterred_data;
+struct _ScaterredData3D
+{
+	int           nbSamples;
+	Data3D        *scaterred;
+	BoundingBox3D obb;
+};
+
+typedef struct _ScaterredData2D ScaterredData2D;
+typedef struct _ScaterredData3D ScaterredData3D;
 
 /** SampledData 
  * hold sampled data over the area of the bouding box
  */
-struct _sampled_data
+struct _SampledData2D
 {
-	real        width;
-	real        height;
-	real        depth;
-	real        spacing_X;
-	real        spacing_Y;
-	real        spacing_Z;
-	boundingbox obb;
-	real       *sampled_value;
+	int           width;
+	int           height;
+	BoundingBox2D obb;
+	real          *sampledValue;
 };
 
-typedef struct _sampled_data sampled_data;
+struct _SampledData3D
+{
+	int           width;
+	int           height;
+	int           depth;
+	BoundingBox3D obb;
+	real          *sampledValue;
+};
 
-#endif
+typedef struct _SampledData2D SampledData2D;
+typedef struct _SampledData3D SampledData3D;
+
+#endif //TYPE_H

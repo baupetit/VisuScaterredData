@@ -9,18 +9,7 @@
 
 #include "type.h"
 
-/**
- * Allocate the data structure for a defined set of sample
- */
-scaterred_data allocate_scaterred_data( int number_of_sample );
-
-/**
- * Allocate the data structure for sampled data
- */
-sampled_data   allocate_sampled_data_3D( boundingbox obb
-					 real        spacing_X,
-					 real        spacing_Y,
-					 real        spacing_Z );
+void computeBoundingBox(GridType type, BoundingBox2D *box, int nbSamples, Data2D *data);
 
 
-#endif
+#endif //DATA_H
