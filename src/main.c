@@ -11,6 +11,7 @@
 
 int main( int argc, char** argv )
 {
+	// DONNEES
 	ScaterredData2D data;
 	SampledData2D result;
 	data.nbSamples = 10;
@@ -22,6 +23,8 @@ int main( int argc, char** argv )
 		data.scaterred[i].z = ((real)i*i) / ((real)10);
 	}
 
+
+
 	for (i = 0; i < 10; ++i){
 		printf("Point %i : %f %f %f\n",
 		       i,
@@ -31,36 +34,16 @@ int main( int argc, char** argv )
 		       );	
 	}
 
-	//Matrix *a,*b;
-	/*
-	a = allocateMatrix(1,2);
-	b = allocateMatrix(2,1);
+	// resolution
+	result.width = 5;
+	result.height = 5;
 
-	(*a).values[0]=1;
-	(*a).values[1]=10;
-	(*b).values[0]=2;
-	(*b).values[1]=5;
-	
-	printMatrix(*a);
-	printMatrix(*b);
-	printMatrix(*multiply(*a,*b));
-	*/
+	multiQuadricInterpolation2D(DEFAULT_GRID,data,&result);
+	ecrireFichierVTK2D("lol.vtk", result);
 
-	Matrix *mat = allocateMatrix(2,2);
-	(*mat).values[0]=1;
-	(*mat).values[1]=3;
-	(*mat).values[2]=1;
-	(*mat).values[3]=7;
-
-	Matrix *invMat = invert(*mat);
-	printMatrix(*mat);
-	printMatrix(*invMat);
-
-	multiQuadricInterpolation(DEFAULT_GRID,data,&result);
-	//computeBoundingBox(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
-
-	printf("Grid Min : %f %f\n",result.obb.xmin,result.obb.ymin);
-	printf("Grid Max : %f %f\n",result.obb.xmax,result.obb.ymax);
+	// ON FREE TOUT
+	free(data.scaterred);
+	free(result.sampledValue);
 
 	return 0;
 } 

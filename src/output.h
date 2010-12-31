@@ -7,6 +7,9 @@
 #ifndef OUTPUT_H
 #define OUTPUT_H
 
-void ecrireFichierVTK(char *filePath, int resolution, float *boundMin, float* boundMax, float **data);
+#include "type.h"
+
+void ecrireFichierVTK2D(char *filePath, SampledData2D data);
+void ecrireFichierVTK3D(char *filePath, SampledData3D data);
 
 #endif //OUTPUT_H

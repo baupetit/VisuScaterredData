@@ -18,9 +18,14 @@ SET(SOURCES
   interpolate.c
   data.c
   )
-  
-# Realite Virtuelle
+
+# Math library
+if(UNIX)
+  link_libraries(m)
+endif(UNIX)
+
 add_executable(visu ${HEADERS} ${SOURCES} )
+
 #lien des bib. sur viewer
 #target_link_libraries(../paraglider  TowerEngine  )
 
