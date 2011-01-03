@@ -14,18 +14,28 @@ int main( int argc, char** argv )
 	// DONNEES
 	ScaterredData2D data;
 	SampledData2D result;
-	data.nbSamples = 10;
-	data.scaterred = malloc(10*sizeof(Data2D));
+	data.nbSamples = 4;
+	data.scaterred = malloc(data.nbSamples*sizeof(Data2D));
 	int i;
-	for (i = 0; i < 10; ++i){
-		data.scaterred[i].x = ((real)i) / ((real)10);
-		data.scaterred[i].y = ((real)15) / ((real)i+1);
-		data.scaterred[i].z = ((real)i*i) / ((real)10);
-	}
+	data.scaterred[0].x = 0.0;
+	data.scaterred[0].y = 0.0;
+	data.scaterred[0].z = 0.0;
+
+	data.scaterred[1].x = 1.0;
+	data.scaterred[1].y = 0.0;
+	data.scaterred[1].z = 0.5;
+
+	data.scaterred[2].x = 0.0;
+	data.scaterred[2].y = 1.0;
+	data.scaterred[2].z = 0.5;
+	
+	data.scaterred[3].x = 1.0;
+	data.scaterred[3].y = 1.0;
+	data.scaterred[3].z = 1.0;
 
 
 
-	for (i = 0; i < 10; ++i){
+	for (i = 0; i < 4; ++i){
 		printf("Point %i : %f %f %f\n",
 		       i,
 		       data.scaterred[i].x,
@@ -35,8 +45,8 @@ int main( int argc, char** argv )
 	}
 
 	// resolution
-	result.width = 5;
-	result.height = 5;
+	result.width = 100;
+	result.height = 100;
 
 	multiQuadricInterpolation2D(DEFAULT_GRID,data,&result);
 	ecrireFichierVTK2D("lol.vtk", result);
