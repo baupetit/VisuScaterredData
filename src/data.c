@@ -10,6 +10,18 @@
 #include <time.h>
 #include <math.h>
 
+#define MAX_REC_LEN 1024
+#define TRUE 1
+#define FALSE 0
+
+#define LIGNE_DATA_DIMENSION 0
+#define LIGNE_NUMBER_POINTS 1
+#define LIGNE_COORDONNEE_X 2
+#define LIGNE_COORDONNEE_Y 3
+#define LIGNE_COORDONNEE_Z 4
+#define LIGNE_COORDONNEE_W 5
+
+
 /* allocate the given data */
 ScaterredData2D* allocateData2D( int nbSamples )
 {
@@ -239,3 +251,188 @@ void generateSinCData3D(ScaterredData3D *data, real factor,
 		data->scaterred[ind].w = (sinf(factor*M_PI*dist) / (factor*M_PI*dist)) ;
 	}
 }
+
+
+/*
+ * LECTURE DE FICHIERS
+ */
+
+int convertToInt(char *mot, int *store){
+	// VERIFICATION DE LA CONVERSION
+	char *ptr;
+	long int res = strtol(mot,&ptr,10);
+	if (*ptr != '\0'){
+		printf("\n-----   ERREUR DE CONVERSION : INT   -----\n");
+		return FALSE;
+	}
+	*store = (int) res;
+	return TRUE;
+}
+
+int convertToReal(char *mot, real *store){
+	char *ptr;
+	double res = strtod(mot,&ptr);
+	if (*ptr != '\0'){
+		printf("\n-----   ERREUR DE CONVERSION : REAL   -----\n");
+		return FALSE;
+	}
+	*store = (real) res;
+	return TRUE;
+}
+
+int isRelevantChar(char c){
+	// ON NE LISTE QUE LES CARACTERES POUVANT ETRE PRESENTS DANS UN REAL OU UN INT 
+	if ( c=='0' || c=='1' || c=='2' || c=='3' || c=='4' || c=='5' || c=='6' || c=='7' || c=='8' || c=='9' || c=='.' || c=='-' || c=='#' ){
+		return TRUE;		
+	}
+	return FALSE;
+}
+
+
+char* lireMot(char line[MAX_REC_LEN], int *index){
+	char *mot;
+	int start = -1;
+	int i;
+
+	// LE DERNIER CARACTERE PERTINENT DANS LINE EST SUIVI DU CARACTERE NUL '\0'
+	while (*index<MAX_REC_LEN && line[*index]!='\0'){
+		if (start==-1 && isRelevantChar(line[*index])){
+			start = *index;
+		}else if (start!=-1 && (!isRelevantChar(line[*index]))){
+			mot = malloc((*index-start+1)*sizeof(char));
+			for (i=start; i<*index; ++i){
+				mot[i-start] = line[i];
+			}
+			// ON N'OUBLIE PAS LE CARACTERE DE FIN DE CHAINE : '\0'
+			mot[*index-start] = '\0';
+			*index = *index +1;
+			return mot;
+		}
+		*index = *index + 1;
+	}
+	return NULL;
+}
+
+
+ScaterredData2D* readData2D(char* fileName){
+	FILE* f = NULL;
+	f = fopen(fileName, "r");
+
+	// DATA_DIMENSION
+	int data_dim;
+	// NUMBER_POINTS
+	int numberPoints;
+	// SCATERRED DATA
+	ScaterredData2D* data;
+
+	char line[MAX_REC_LEN]="";
+	char *mot;
+	int lineIndex = 0;
+	int lineStatus = LIGNE_DATA_DIMENSION;
+	// INDEX DE LA COORDONNEE DANS LE TABLEAU 
+	int coordIndex = 0;
+	// BOUCLE
+	int i;
+
+	if (f != NULL){
+		while(fgets(line,MAX_REC_LEN,f)!=NULL){
+			// LIRE LE PREMIER MOT DE LA LIGNE
+			mot = lireMot(line, &lineIndex);
+			// SI IL COMMENCE PAR UN # ON SKIP LA LIGNE
+			if (mot!=NULL && mot[0]!='#'){
+				while (mot!=NULL){
+					// ANALYSE DU MOT SI IL EST PERTINENT
+					if (lineStatus == LIGNE_DATA_DIMENSION){
+
+						if (!convertToInt(mot,&data_dim)){
+							free(mot);
+							fclose(f);
+							return NULL;
+						}
+						lineStatus = LIGNE_NUMBER_POINTS;
+
+					}else if (lineStatus == LIGNE_NUMBER_POINTS){
+
+						if (!convertToInt(mot,&numberPoints)){
+							free(mot);
+							fclose(f);
+							return NULL;
+						}
+						lineStatus = LIGNE_COORDONNEE_X;
+						
+						// ON ALLOUE LE SCATERRED DATA
+						data = allocateData2D(numberPoints);
+	
+					}else if (lineStatus == LIGNE_COORDONNEE_X){
+	
+						if (!convertToReal(mot,&(data->scaterred[coordIndex].x))){
+							free(mot);
+							fclose(f);
+							// ON DESALLOUE CAR CA NE SERA PAS FAIT 
+							// DANS LE MAIN SI UNE ERREUR SURVIENT
+							freeData2D(data);
+							return NULL;
+						}
+						lineStatus = LIGNE_COORDONNEE_Y;
+	
+					}else if (lineStatus == LIGNE_COORDONNEE_Y){
+	
+						if (!convertToReal(mot,&(data->scaterred[coordIndex].y))){
+							free(mot);
+							fclose(f);
+							// ON DESALLOUE CAR CA NE SERA PAS FAIT 
+							// DANS LE MAIN SI UNE ERREUR SURVIENT
+							freeData2D(data);
+							return NULL;
+						}
+						lineStatus = LIGNE_COORDONNEE_Z;
+	
+					}else if (lineStatus == LIGNE_COORDONNEE_Z){
+	
+						if (!convertToReal(mot,&(data->scaterred[coordIndex].z))){
+							free(mot);
+							fclose(f);
+							// ON DESALLOUE CAR CA NE SERA PAS FAIT 
+							// DANS LE MAIN SI UNE ERREUR SURVIENT
+							freeData2D(data);
+							return NULL;
+						}
+						lineStatus = LIGNE_COORDONNEE_X;
+						++coordIndex;
+						if (coordIndex>=(numberPoints)){
+							// FIN
+							free(mot);
+							fclose(f);
+							return data;
+						}
+	
+					}
+					free(mot);
+					// LIRE MOT SUIVANT DANS LA LIGNE
+					mot = lireMot(line, &lineIndex);
+				}
+			}else{
+				// FREE SI C'ETAIT UNE LIGNE COMMENTAIRE
+				if (mot!=NULL)
+					free(mot);
+			}
+			// ON RECOMMENCERA L'ANALYSE A L'INDEX 0 DE LA LIGNE SUIVANTE
+			lineIndex = 0;
+		}
+		fclose(f);
+	}else{
+		printf("\nE R R E U R - Impossible d'ouvrir le fichier %s\n",fileName);
+	}
+
+	return NULL;
+
+}
+
+/*
+ScaterredData3D* readData3D(char* fileName){
+
+
+}
+
+
+*/

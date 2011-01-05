@@ -16,7 +16,20 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 	computeBoundingBox2D(type, &(data.obb), data.nbSamples, data.scaterred);
 	(*result).obb = data.obb;
 
+	/*
+	// CALCUL DE R : CRITERE DE FRANKE
+	real R = ;
+	int i,j;
+	for (i = 0; i<data.nbSamples-1; ++i){
+		for (j = i+1; j<data.nbSamples; ++j){
+			real D = sqrt(pow(data.scaterred[i].x-data.scaterred[j].x,2)+pow(data.scaterred[i].y-data.scaterred[j].y,2));
+			
+		}
+	}
+	*/
+
 	// DUMMY
+
 	real R = (real)1;
 	
 	// Variables
@@ -30,8 +43,8 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 		for (column = 0; column < data.nbSamples; ++column){
 			Data2D xj = data.scaterred[column];
 
-			(*H).values[line*(*H).width+column] = 
-				sqrt(R*R + 
+			(*H).values[line*(H->width)+column] = 
+				sqrt(R + 
 				     (xi.x - xj.x) * (xi.x - xj.x) +
 				     (xi.y - xj.y) * (xi.y - xj.y));
 		}
@@ -75,6 +88,9 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 			(*result).sampledValue[line*(*result).width+column] = (*gridScalars).values[line*(*result).width+column];
 		}
 	}
+
+	printMatrix(*scalars);
+	printMatrix(*coefficients);
 	
 	// On free toutes les matrices allouées
 	deallocateMatrix(H);
