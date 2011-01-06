@@ -43,6 +43,6 @@ void generateSinCData3D(ScaterredData3D *data,real factor,
 		      real rangeMin, real rangeMax);
 
 ScaterredData2D* readData2D(char* fileName);
-//ScaterredData3D* readData3D(char* fileName);
+ScaterredData3D* readData3D(char* fileName);
 
 #endif //DATA_H

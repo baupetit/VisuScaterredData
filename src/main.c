@@ -44,6 +44,10 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				exit(0);
 			}	
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Nom du fichier source manquant\n");
+				exit(0);
+			}
 			*sourceIndex=i;
 		}else if (stringCompare(argv[i],"-cible")){
 			if (*cibleIndex != -1){
@@ -51,6 +55,10 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				exit(0);
 			}
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Nom du fichier cible manquant\n");
+				exit(0);
+			}
 			*cibleIndex=i;
 		}else if (stringCompare(argv[i],"-type")){
 			if (*typeIndex != -1){
@@ -58,6 +66,10 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				exit(0);
 			}
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Type manquant\n");
+				exit(0);
+			}
 			*typeIndex=i;
 			if ((!stringCompare(argv[i],"2D")) &&  (!stringCompare(argv[i],"3D"))){
 				printf("ERREUR ARGUMENT - Le type de données doit être 2D ou 3D\n");
@@ -75,12 +87,20 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			}
 			// resolutionX
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - ResolutionX manquante\n");
+				exit(0);
+			}
 			if (!convertToInt(argv[i], resolutionX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
 				exit(0);
 			}
 			// resolutionY
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - ResolutionY manquante\n");
+				exit(0);
+			}
 			if (!convertToInt(argv[i], resolutionY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
 				exit(0);
@@ -88,6 +108,10 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			//resolutionZ
 			if (stringCompare(argv[*typeIndex],"3D")){
 				++i;
+				if (i==argc){
+					printf("ERREUR ARGUMENT - ResolutionZ manquante\n");
+					exit(0);
+				}
 				if (!convertToInt(argv[i], resolutionZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
 					exit(0);
@@ -106,24 +130,40 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			}
 			// minX
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne minX manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], minX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
 			}
 			// maxX
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne maxX manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], maxX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
 			}
 			// minY
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne minY manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], minY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
 			}
 			// maxY
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne maxY manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], maxY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
@@ -131,12 +171,20 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			if (stringCompare(argv[*typeIndex],"3D")){
 				// minZ
 				++i;
+				if (i==argc){
+					printf("ERREUR ARGUMENT - Borne minZ manquante\n");
+					exit(0);
+				}
 				if (!convertToReal(argv[i], minZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 					exit(0);
 				}
 				// maxZ
 				++i;
+				if (i==argc){
+					printf("ERREUR ARGUMENT - Borne maxZ manquante\n");
+					exit(0);
+				}
 				if (!convertToReal(argv[i], maxZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 					exit(0);
@@ -144,12 +192,20 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			}
 			// minS
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne minS manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], minS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
 			}
 			// maxS
 			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Borne maxS manquante\n");
+				exit(0);
+			}
 			if (!convertToReal(argv[i], maxS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
 				exit(0);
@@ -236,7 +292,28 @@ int main( int argc, char** argv )
 		}
 	}else{
 		// 3D
-		
+		ScaterredData3D *data=NULL;
+		SampledData3D result;
+		if (sourceIndex!=-1){
+			data = readData3D(argv[sourceIndex]);
+		}else{
+			// RANDOM DATA
+			
+		}
+		if (data != NULL){
+			// RESOLUTION
+			result.width = resolutionX;
+			result.height = resolutionY;
+			result.depth = resolutionZ;
+	
+			multiQuadricInterpolation3D(DEFAULT_GRID,*data,&result);
+			//multiQuadricInterpolation3D(EXTENDED_GRID,*data,&result);
+			
+			ecrireFichierVTK3D(argv[cibleIndex], result);
+			// ON FREE TOUT
+			freeData3D(data);
+			free(result.sampledValue);
+		}
 	}
 
 
