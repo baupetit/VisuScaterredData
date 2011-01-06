@@ -8,14 +8,103 @@
 #include <math.h>
 #include <stdlib.h>
 
+// shepard ui coefficient
+#define SHEPARD_UI 1
 
+// return the distance between two 2D sample
+inline static real dist2sample(const Data2D a, const Data2D b)
+{
+	const real xd = a.x - b.x;
+	const real yd = a.y - b.y;
+	return sqrt((xd*xd) + (yd*yd));
+}
+
+// compute wi(x)
+inline static real computeWINom(ScaterredData2D data, Data2D X, int i)
+{
+	real nom = 1;
+	// compute nom
+	const int nbSample = data.nbSamples;
+	int j;
+	for (j=0;j<nbSample;++j)
+	{
+		// ignore case j==i
+		if (j==i)
+		{
+			continue;
+		}
+		nom *= pow(dist2sample(X,data.scaterred[j]),SHEPARD_UI);
+	}
+
+	return nom;
+}
+
+// return the shepard interpolation for the point X
+// => F(X)
+inline static real sheparderp(ScaterredData2D data, Data2D X)
+{
+	real result = 0;
+	const int nbSample = data.nbSamples;
+	real denom = 0;
+	// compute denom
+	int k;
+	for (k=0;k<nbSample;++k)
+	{
+		int j;
+		real prod = 1;
+		for (j=0;j<nbSample;++j)
+		{
+			// ignore case j==k
+			if (j==k)
+			{
+				continue;
+			}
+			prod *= pow(dist2sample(X,data.scaterred[k]),SHEPARD_UI);
+		}
+		denom += prod;
+	}
+	// compute F(X)
+	int i;
+	for (i=0;i<nbSample;++i)
+	{
+		// compute wi
+		real wiNom = computeWINom(data,X,i);
+		// add to result
+		result += data.scaterred[i].z * (wiNom/denom);
+	}
+	return result;
+}
+
+void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result)
+{
+	// On calcule la bounding box et on la recopie dans result
+	computeBoundingBox2D(type, &(data.obb), data.nbSamples, data.scaterred);
+	(*result).obb = data.obb;
+	
+	// pour chaque point de la grille
+	int i, j;
+	const real spacingX = (result->obb.xmax - result->obb.xmin) / (real)result->width;
+	const real spacingY = (result->obb.ymax - result->obb.ymin) / (real)result->height;
+	const real xmin = result->obb.xmin;
+	const real ymin = result->obb.ymin;
+	for (i=0;i<result->height;++i)
+	{
+		for (j=0;j<result->width;++j)
+		{
+			Data2D x = { xmin + j*spacingX,
+				     ymin + i*spacingY,
+			             0 };
+			result->sampledValue[i*(result->width)+j] = sheparderp(data,x);
+		}
+	}
+}
 
 void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledData2D *result)
 {
 	// On calcule la bounding box et on la recopie dans result
 	computeBoundingBox2D(type, &(data.obb), data.nbSamples, data.scaterred);
 	(*result).obb = data.obb;
-
+	
 	/*
 	// CALCUL DE R : CRITERE DE FRANKE
 	real R = ;
