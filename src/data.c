@@ -276,6 +276,7 @@ ScaterredData2D* generateSinCData2D(int nbSamples, real factor, real minX, real 
 			data->scaterred[ind].z = ((real)1.0);
 		}
 	}
+	return data;
 }
 
 ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real maxX, real minY, real maxY, real minZ, real maxZ)
@@ -297,6 +298,7 @@ ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real 
 			data->scaterred[ind].w = ((real)1.0);
 		}
 	}
+	return data;
 }
 
 

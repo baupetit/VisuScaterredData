@@ -4,6 +4,7 @@
  *           Nicolas  Cousin
  */
 
+#include "type.h"
 #include "data.h"
 #include "matrix.h"
 #include "interpolate.h"
@@ -359,7 +360,7 @@ int main( int argc, char** argv )
 			if( (result = allocateResult2D( resolutionX, resolutionY )) != NULL )
 			{
 				//multiQuadricInterpolation2D(DEFAULT_GRID,*data,result);
-				shepardInterpolation2D(DEFAULT_GRID,*data,result);
+				shepardInterpolation2D(DEFAULT_GRID,*data,result,minX,maxX,minY,maxY);
 				//multiQuadricInterpolation2D(EXTENDED_GRID,*data,result);
 				
 				ecrireFichierVTK2D(cibleIndex, *result);
