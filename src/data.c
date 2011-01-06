@@ -162,93 +162,78 @@ void initRand()
 	srand(time(NULL));
 }
 
-inline static void generateRandom(real *r, real min, real max)
+inline static real generateRandom(real min, real max)
 {
-	//*r = fmod(rand()+min,max);
-	*r = ((rand()/(float)RAND_MAX) * (max - min)) + min;
+	//return fmod(rand()+min,max);
+	return ((rand()/(float)RAND_MAX) * (max - min)) + min;
 }
 
-inline static void generate2DCoordinates(real *x, real *y, real min, real max)
+ScaterredData2D* generateRandomData2D(int nbSamples, real minX, real maxX, real minY, real maxY, real minZ, real maxZ)
 {
-	generateRandom(x,min,max);
-	generateRandom(y,min,max);
-}
-
-inline static void generate3DCoordinates(real *x, real *y, real *z, real min, real max)
-{
-	generateRandom(x,min,max);
-	generateRandom(y,min,max);
-	generateRandom(z,min,max);
-}
-
-void generateRandomData2D(ScaterredData2D *data,
-			real rangeMin, real rangeMax)
-{
+	if (nbSamples<2 || minX==maxX || minY==maxY || minZ==maxZ) return NULL;
+	ScaterredData2D* data = allocateData2D(nbSamples);
 	int ind = 0;
-	if (data==NULL)
-		return;
-	// init samples
-	for (;ind < data->nbSamples;++ind)
+	for (;ind < nbSamples;++ind)
 	{
-		generate2DCoordinates(&data->scaterred[ind].x,
-				      &data->scaterred[ind].y,
-				      rangeMin,rangeMax);
-		generateRandom(&data->scaterred[ind].z,-1.0,1.0);
+		data->scaterred[ind].x = generateRandom(minX,maxX);
+		data->scaterred[ind].y = generateRandom(minY,maxY);
+		data->scaterred[ind].z = generateRandom(minZ,maxZ);
 	}
+	return data;
 }
 
-void generateRandomData3D(ScaterredData3D *data, 
-			real rangeMin, real rangeMax)
+ScaterredData3D* generateRandomData3D(int nbSamples, real minX, real maxX, real minY, real maxY, real minZ, real maxZ, real minW, real maxW)
 {
+	if (nbSamples<2 || minX==maxX || minY==maxY || minZ==maxZ || minW==maxW) return NULL;
+	ScaterredData3D* data = allocateData3D(nbSamples);
 	int ind = 0;
-	if (data==NULL)
-		return;
-	// init samples
-	for (;ind < data->nbSamples;++ind)
+	for (;ind < nbSamples;++ind)
 	{
-		generate3DCoordinates(&data->scaterred[ind].x,
-				      &data->scaterred[ind].y,
-				      &data->scaterred[ind].z,
-				      rangeMin,rangeMax);
-		generateRandom(&data->scaterred[ind].w,-1.0,1.0);
+		data->scaterred[ind].x = generateRandom(minX,maxX);
+		data->scaterred[ind].y = generateRandom(minY,maxY);
+		data->scaterred[ind].z = generateRandom(minZ,maxZ);
+		data->scaterred[ind].w = generateRandom(minW,maxW);
 	}
+	return data;
 }
 
-void generateSinCData2D(ScaterredData2D *data, real factor,
-		      real rangeMin, real rangeMax)
+ScaterredData2D* generateSinCData2D(int nbSamples, real factor, real minX, real maxX, real minY, real maxY)
 {
+	if (nbSamples<2 || minX==maxX || minY==maxY) return NULL;
+	ScaterredData2D* data = allocateData2D(nbSamples);
 	int ind = 0;
-	if (data==NULL)
-		return;
-	// init samples
 	for (;ind < data->nbSamples;++ind)
 	{
-		generate2DCoordinates(&data->scaterred[ind].x,
-				      &data->scaterred[ind].y,
-				      rangeMin,rangeMax);
+		data->scaterred[ind].x = generateRandom(minX,maxX);
+		data->scaterred[ind].y = generateRandom(minY,maxY);
 		real dist = sqrt(data->scaterred[ind].x*data->scaterred[ind].x + 
 				 data->scaterred[ind].y*data->scaterred[ind].y);
-		data->scaterred[ind].z = (sinf(factor*M_PI*dist) / (factor*M_PI*dist)) ;
+		if (dist!=0){
+			data->scaterred[ind].z = (sinf(factor*M_PI*dist) / (factor*M_PI*dist));
+		}else{
+			data->scaterred[ind].z = ((real)1.0);
+		}
 	}
 }
 
-void generateSinCData3D(ScaterredData3D *data, real factor,
-		      real rangeMin, real rangeMax)
+ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real maxX, real minY, real maxY, real minZ, real maxZ)
 {
+	if (nbSamples<2 || minX==maxX || minY==maxY || minZ==maxZ) return NULL;
+	ScaterredData3D* data = allocateData3D(nbSamples);
 	int ind = 0;
-	if (data==NULL)
-		return;
-	// init samples
 	for (;ind < data->nbSamples;++ind)
 	{
-		generate3DCoordinates(&data->scaterred[ind].x,
-				      &data->scaterred[ind].y,
-				      &data->scaterred[ind].z,
-				      rangeMin,rangeMax);
+		data->scaterred[ind].x = generateRandom(minX,maxX);
+		data->scaterred[ind].y = generateRandom(minY,maxY);
+		data->scaterred[ind].z = generateRandom(minZ,maxZ);
 		real dist = sqrt(data->scaterred[ind].x*data->scaterred[ind].x + 
 				 data->scaterred[ind].y*data->scaterred[ind].y +
 				 data->scaterred[ind].z*data->scaterred[ind].z);
-		data->scaterred[ind].w = (sinf(factor*M_PI*dist) / (factor*M_PI*dist)) ;
+		if (dist!=0){
+			data->scaterred[ind].w = (sinf(factor*M_PI*dist) / (factor*M_PI*dist));
+		}else{
+			data->scaterred[ind].w = ((real)1.0);
+		}
 	}
 }
 

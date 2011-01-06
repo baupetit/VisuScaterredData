@@ -41,68 +41,81 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 		if (stringCompare(argv[i],"-source")){
 			if (*sourceIndex != -1){
 				printf("ERREUR ARGUMENT - source est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}	
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Nom du fichier source manquant\n");
+				description();
 				exit(0);
 			}
 			*sourceIndex=i;
 		}else if (stringCompare(argv[i],"-cible")){
 			if (*cibleIndex != -1){
 				printf("ERREUR ARGUMENT - cible est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Nom du fichier cible manquant\n");
+				description();
 				exit(0);
 			}
 			*cibleIndex=i;
 		}else if (stringCompare(argv[i],"-type")){
 			if (*typeIndex != -1){
 				printf("ERREUR ARGUMENT - cible est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Type manquant\n");
+				description();
 				exit(0);
 			}
 			*typeIndex=i;
 			if ((!stringCompare(argv[i],"2D")) &&  (!stringCompare(argv[i],"3D"))){
 				printf("ERREUR ARGUMENT - Le type de données doit être 2D ou 3D\n");
+				description();
 				exit(0);
 			}
 		}else if (stringCompare(argv[i],"-resolution")){
 			if (*typeIndex == -1){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
+				description();
 				exit(0);
 			}
 			if (resolutionDejaDefinie){
 				printf("ERREUR ARGUMENT - resolution est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			// resolutionX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - ResolutionX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToInt(argv[i], resolutionX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// resolutionY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - ResolutionY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToInt(argv[i], resolutionY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
 				exit(0);
 			}
 			//resolutionZ
@@ -110,10 +123,12 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - ResolutionZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToInt(argv[i], resolutionZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+					description();
 					exit(0);
 				}
 			}
@@ -122,50 +137,60 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			if (*typeIndex == -1){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
+				description();
 				exit(0);
 			}
 			if (bornesDejaDefinies){
 				printf("ERREUR ARGUMENT - bornes sont définies 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			// minX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// minY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			if (stringCompare(argv[*typeIndex],"3D")){
@@ -173,20 +198,24 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - Borne minZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToReal(argv[i], minZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+					description();
 					exit(0);
 				}
 				// maxZ
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - Borne maxZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToReal(argv[i], maxZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+					description();
 					exit(0);
 				}
 			}
@@ -194,25 +223,30 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minS manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxS
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxS manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			bornesDejaDefinies=1;
 		}else{
 			printf("ERREUR ARGUMENT - Argument non reconnu : %s\nVous avez peut être précisé trop ou pas assez de bornes ou de résolutions au vu du type\n",argv[i]);
+			description();
 			exit(0);
 		}	
 		++i;
@@ -220,18 +254,23 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 
 	if (*typeIndex==-1){
 		printf("ERREUR ARGUMENT - Veuillez préciser le type de données\n");
+		description();
 		exit(0);
 	}else if (*cibleIndex==-1){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier cible\n");
+		description();
 		exit(0);
 	}else if (!resolutionDejaDefinie){
 		printf("ERREUR ARGUMENT - Veuillez préciser la résolution\n");
+		description();
 		exit(0);
 	}else if (!bornesDejaDefinies && (*sourceIndex==-1)){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire\n");
+		description();
 		exit(0);
 	}else if (bornesDejaDefinies && (*sourceIndex!=-1)){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire, mais pas les 2 à la fois\n");
+		description();
 		exit(0);
 	}
 }
@@ -260,7 +299,11 @@ int main( int argc, char** argv )
 	int cibleIndex=-1;
 	int typeIndex=-1;
 	int resolutionX, resolutionY, resolutionZ;
-	double minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
+	int nbSamples;
+	real minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
+
+	// DUMMY
+	nbSamples = 10;
 
 	checkArguments(argc, argv, &sourceIndex, &cibleIndex, &typeIndex, &resolutionX, &resolutionY, &resolutionZ,
 		       &minX, &maxX, &minY, &maxY, &minZ, &maxZ, &minS, &maxS);
@@ -275,7 +318,7 @@ int main( int argc, char** argv )
 			data = readData2D(argv[sourceIndex]);
 		}else{
 			// RANDOM DATA
-			
+			data = generateRandomData2D(nbSamples, minX, maxX, minY, maxY, minS, maxS);
 		}
 		if (data != NULL){
 			// RESOLUTION
@@ -284,7 +327,7 @@ int main( int argc, char** argv )
 	
 			multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
 			//multiQuadricInterpolation2D(EXTENDED_GRID,*data,&result);
-			
+
 			ecrireFichierVTK2D(argv[cibleIndex], result);
 			// ON FREE TOUT
 			freeData2D(data);
@@ -298,7 +341,7 @@ int main( int argc, char** argv )
 			data = readData3D(argv[sourceIndex]);
 		}else{
 			// RANDOM DATA
-			
+			data = generateRandomData3D(nbSamples, minX, maxX, minY, maxY, minZ, maxZ, minS, maxS);
 		}
 		if (data != NULL){
 			// RESOLUTION
