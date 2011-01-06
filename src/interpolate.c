@@ -88,9 +88,6 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 			(*result).sampledValue[line*(*result).width+column] = (*gridScalars).values[line*(*result).width+column];
 		}
 	}
-
-	printMatrix(*scalars);
-	printMatrix(*coefficients);
 	
 	// On free toutes les matrices allouées
 	deallocateMatrix(H);
