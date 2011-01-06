@@ -14,7 +14,7 @@ int main( int argc, char** argv )
 	// DONNEES
 	ScaterredData2D *data;
 	SampledData2D result;
-	const int nbSamples = 200;
+	const int nbSamples = 10;
 	const int width = 100;
 	const int height = 100;
 	
@@ -45,7 +45,7 @@ int main( int argc, char** argv )
 
 	// init 
 	//generateRandomData2D(data, 0.0,1.0);
-	generateSinCData2D(data, 4,-2.0,2.0);
+	generateSinCData2D(data, 2,-2.0,2.0);
 
 	int i;
 	for (i = 0; i < nbSamples; ++i){
