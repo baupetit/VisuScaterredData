@@ -209,20 +209,37 @@ int main( int argc, char** argv )
 	checkArguments(argc, argv, &sourceIndex, &cibleIndex, &typeIndex, &resolutionX, &resolutionY, &resolutionZ,
 		       &minX, &maxX, &minY, &maxY, &minZ, &maxZ, &minS, &maxS);
 
-
-	// DONNEES
-	ScaterredData2D *data;
-	SampledData2D result;
-
-
-
-	const int nbSamples = 200;
-	const int width = 50;
-	const int height = 50;
-	int i;
-	
 	// INIT
 	initRand();
+	
+	if (stringCompare(argv[typeIndex],"2D")){
+		ScaterredData2D *data=NULL;
+		SampledData2D result;
+		if (sourceIndex!=-1){
+			data = readData2D(argv[sourceIndex]);
+		}else{
+			// RANDOM DATA
+			
+		}
+		if (data != NULL){
+			// RESOLUTION
+			result.width = resolutionX;
+			result.height = resolutionY;
+	
+			multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
+			//multiQuadricInterpolation2D(EXTENDED_GRID,*data,&result);
+			
+			ecrireFichierVTK2D(argv[cibleIndex], result);
+			// ON FREE TOUT
+			freeData2D(data);
+			free(result.sampledValue);
+		}
+	}else{
+		// 3D
+		
+	}
+
+
 	
 	/*
 	// allocation
@@ -249,25 +266,6 @@ int main( int argc, char** argv )
 	//generateRandomData2D(data, 0.0,1.0);
 	generateSinCData2D(data, 4,-2.0,2.0);
 	*/
-
-	data = readData2D("../data/villes_ensoleillement_2D.txt");
-
-	if (data != NULL){
-		// resolution
-		result.width = width;
-		result.height = height;
-	
-		multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
-		//multiQuadricInterpolation2D(EXTENDED_GRID,data,&result);
-
-		ecrireFichierVTK2D("lol.vtk", result);
-
-		// ON FREE TOUT
-		//free(data.scaterred);
-		freeData2D(data);
-		free(result.sampledValue);
-	}
-
 	return 0;
 } 
 
