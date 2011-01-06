@@ -80,6 +80,68 @@ void freeData3D(ScaterredData3D* data)
 	}
 }
 
+/* allocate results */
+SampledData2D* allocateResult2D( int width, int height )
+{
+	SampledData2D* data;
+	data = (SampledData2D*) malloc ( sizeof(SampledData2D) );
+	if (data == NULL)
+		return NULL;
+	data->width = width;
+	data->height = height;
+	data->sampledValue = (real*)malloc( height * width * sizeof(real) );
+	if(data->sampledValue == NULL)
+	{
+		free(data);
+		return NULL;
+	}
+	return data;
+}
+
+SampledData3D* allocateResult3D( int width, int height, int depth )
+{
+	SampledData3D* data;
+	data = (SampledData3D*) malloc ( sizeof(SampledData3D) );
+	if (data == NULL)
+		return NULL;
+	data->width = width;
+	data->height = height;
+	data->depth = depth;
+	data->sampledValue = (real*)malloc( height * width * depth * sizeof(real) );
+	if(data->sampledValue == NULL)
+	{
+		free(data);
+		return NULL;
+	}
+	return data;
+}
+
+/* free results */
+void freeResult2D(SampledData2D* data)
+{
+	if (data!=NULL)
+	{
+		if (data->sampledValue!=NULL)
+		{
+			free(data->sampledValue);
+		}
+		free(data);
+	}
+}
+
+void freeResult3D(SampledData3D* data)
+{
+	if (data!=NULL)
+	{
+		if (data->sampledValue!=NULL)
+		{
+			free(data->sampledValue);
+		}
+		free(data);
+	}
+}
+
+
 void computeBoundingBox2D(GridType type, BoundingBox2D *box, int nbSamples, Data2D *data)
 {
 	real minX, minY, maxX, maxY;
@@ -214,6 +276,7 @@ ScaterredData2D* generateSinCData2D(int nbSamples, real factor, real minX, real 
 			data->scaterred[ind].z = ((real)1.0);
 		}
 	}
+	return data;
 }
 
 ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real maxX, real minY, real maxY, real minZ, real maxZ)
@@ -235,6 +298,7 @@ ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real 
 			data->scaterred[ind].w = ((real)1.0);
 		}
 	}
+	return data;
 }
 
 

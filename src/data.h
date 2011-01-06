@@ -17,6 +17,14 @@ ScaterredData3D* allocateData3D( int nbSamples );
 void freeData2D(ScaterredData2D* data);
 void freeData3D(ScaterredData3D* data);
 
+/* allocate results */
+SampledData2D* allocateResult2D( int width, int height );
+SampledData3D* allocateResult3D( int width, int height, int depth );
+
+/* free results */
+void freeResult2D(SampledData2D* data);
+void freeResult3D(SampledData3D* data);
+
 /* compute the bounding box associated with the 
    given set of data */
 void computeBoundingBox2D(GridType type, BoundingBox2D *box, int nbSamples, Data2D *data);

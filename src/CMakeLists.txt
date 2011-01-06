@@ -19,6 +19,8 @@ SET(SOURCES
   data.c
   )
 
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+
 # Math library
 if(UNIX)
   link_libraries(m)
