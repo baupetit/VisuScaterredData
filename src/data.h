@@ -28,19 +28,19 @@ void computeBoundingBox3D(GridType type, BoundingBox3D *box, int nbSamples, Data
  */
 void initRand();
 
-void generateRandomData2D(ScaterredData2D *data, 
-			real rangeMin, real rangeMax);
-void generateRandomData3D(ScaterredData3D *data, 
-			real rangeMin, real rangeMax);
+ScaterredData2D* generateRandomData2D(int nbSamples, real minX, real maxX, 
+				      real minY, real maxY, real minZ, real maxZ);
+ScaterredData3D* generateRandomData3D(int nbSamples, real minX, real maxX, 
+				      real minY, real maxY, real minZ, real maxZ, real minW, real maxW);
 
 
 /* generate scaterred data based on the cardinal sinus function
    points coordinates are inside [rangeMin,rangeMax]
  */
-void generateSinCData2D(ScaterredData2D *data,real factor,
-		      real rangeMin, real rangeMax);
-void generateSinCData3D(ScaterredData3D *data,real factor,
-		      real rangeMin, real rangeMax);
+ScaterredData2D* generateSinCData2D(int nbSamples, real factor, real minX, real maxX, 
+				    real minY, real maxY);
+ScaterredData3D* generateSinCData3D(int nbSamples, real factor, real minX, real maxX, 
+				    real minY, real maxY, real minZ, real maxZ);
 
 ScaterredData2D* readData2D(char* fileName);
 ScaterredData3D* readData3D(char* fileName);

@@ -29,45 +29,52 @@ void description(){
 }
 
 void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex, DataType *typeIndex,
-		   int *resolutionX, int *resolutionY, int *resolutionZ,
-		   real *minX, real *maxX, real *minY, real *maxY,
-		   real *minZ, real *maxZ, real *minS, real *maxS){
+		    int *resolutionX, int *resolutionY, int *resolutionZ, int *nbSamples,
+		    real *minX, real *maxX, real *minY, real *maxY,
+		    real *minZ, real *maxZ, real *minS, real *maxS){
 
 	int i=1;
 	int resolutionDejaDefinie=0;
 	int bornesDejaDefinies=0;
+	int echantillonsDejaDefini=0;
 
 	while (i<argc){
 		if (stringCompare(argv[i],"-source")){
 			if (*sourceIndex != NULL){
 				printf("ERREUR ARGUMENT - source est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}	
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Nom du fichier source manquant\n");
+				description();
 				exit(0);
 			}
 			*sourceIndex=argv[i];
 		}else if (stringCompare(argv[i],"-cible")){
 			if (*cibleIndex != NULL){
 				printf("ERREUR ARGUMENT - cible est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Nom du fichier cible manquant\n");
+				description();
 				exit(0);
 			}
 			*cibleIndex=argv[i];
 		}else if (stringCompare(argv[i],"-type")){
 			if (*typeIndex != DATA_TYPE_UNKNOW){
 				printf("ERREUR ARGUMENT - type est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Type manquant\n");
+				description();
 				exit(0);
 			}
 			if (stringCompare(argv[i],"2D"))
@@ -80,120 +87,162 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 			}
 			else {
 				printf("ERREUR ARGUMENT - Le type de données doit être 2D ou 3D\n");
+				description();
 				exit(0);
-			} 
+			}
+
+		}else if (stringCompare(argv[i],"-echantillons")){
+			if (echantillonsDejaDefini){
+				printf("ERREUR ARGUMENT - echantillons est défini 2 fois ou +\n");
+				description();
+				exit(0);
+			}
+			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Nombre d'échatillons manquant\n");
+				description();
+				exit(0);
+			}
+			if (!convertToInt(argv[i], nbSamples)){
+				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
+				exit(0);
+			}
+			echantillonsDejaDefini=1;
 		}else if (stringCompare(argv[i],"-resolution")){
-			if (*typeIndex == -1){
+			if (*typeIndex == DATA_TYPE_UNKNOW){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
+				description();
 				exit(0);
 			}
 			if (resolutionDejaDefinie){
 				printf("ERREUR ARGUMENT - resolution est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			// resolutionX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - ResolutionX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToInt(argv[i], resolutionX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// resolutionY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - ResolutionY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToInt(argv[i], resolutionY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
 				exit(0);
 			}
 			//resolutionZ
-			if (stringCompare(argv[*typeIndex],"3D")){
+			if (*typeIndex == DATA_TYPE_3D){
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - ResolutionZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToInt(argv[i], resolutionZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+					description();
 					exit(0);
 				}
 			}
 			resolutionDejaDefinie=1;
 		}else if (stringCompare(argv[i],"-bornes")){
-			if (*typeIndex == -1){
+			if (*typeIndex == DATA_TYPE_UNKNOW){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
+				description();
 				exit(0);
 			}
 			if (bornesDejaDefinies){
 				printf("ERREUR ARGUMENT - bornes sont définies 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			// minX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxX
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxX manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxX)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// minY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxY
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxY manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxY)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
-			if (stringCompare(argv[*typeIndex],"3D")){
+			if (*typeIndex == DATA_TYPE_3D){
 				// minZ
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - Borne minZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToReal(argv[i], minZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+					description();
 					exit(0);
 				}
 				// maxZ
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - Borne maxZ manquante\n");
+					description();
 					exit(0);
 				}
 				if (!convertToReal(argv[i], maxZ)){
 					printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+					description();
 					exit(0);
 				}
 			}
@@ -201,25 +250,30 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne minS manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], minS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			// maxS
 			++i;
 			if (i==argc){
 				printf("ERREUR ARGUMENT - Borne maxS manquante\n");
+				description();
 				exit(0);
 			}
 			if (!convertToReal(argv[i], maxS)){
 				printf("ERREUR ARGUMENT - Echec de la conversion de %s en REAL\n",argv[i]);
+				description();
 				exit(0);
 			}
 			bornesDejaDefinies=1;
 		}else{
 			printf("ERREUR ARGUMENT - Argument non reconnu : %s\nVous avez peut être précisé trop ou pas assez de bornes ou de résolutions au vu du type\n",argv[i]);
+			description();
 			exit(0);
 		}	
 		++i;
@@ -227,18 +281,23 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 
 	if (*typeIndex==DATA_TYPE_UNKNOW){
 		printf("ERREUR ARGUMENT - Veuillez préciser le type de données\n");
+		description();
 		exit(0);
 	}else if (*cibleIndex==NULL){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier cible\n");
+		description();
 		exit(0);
 	}else if (!resolutionDejaDefinie){
 		printf("ERREUR ARGUMENT - Veuillez préciser la résolution\n");
+		description();
 		exit(0);
-	}else if (!bornesDejaDefinies && (*sourceIndex==NULL)){
-		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire\n");
+	}else if ((*sourceIndex!=NULL) && (bornesDejaDefinies || echantillonsDejaDefini)){
+		printf("ERREUR ARGUMENT - Veuillez préciser :\nLe fichier source \nOU (pas les 2 à la fois) \nLes bornes et le nombre d'échantillons\n");
+		description();
 		exit(0);
-	}else if (bornesDejaDefinies && (*sourceIndex!=NULL)){
-		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire, mais pas les 2 à la fois\n");
+	}else if ((!bornesDejaDefinies || !echantillonsDejaDefini) && (*sourceIndex==NULL)){
+		printf("ERREUR ARGUMENT - Veuillez préciser :\nLe fichier source \nOU (pas les 2 à la fois) \nLes bornes et le nombre d'échantillons\n");
+		description();
 		exit(0);
 	}
 }
@@ -264,7 +323,9 @@ int main( int argc, char** argv )
 {
 	// PARSING DES ARGUMENTS
 	int resolutionX, resolutionY, resolutionZ;
-	double minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
+	int nbSamples;
+	real minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
+
 	char *sourceIndex = NULL;
 	char *cibleIndex  = NULL; 
 	DataType dataType = DATA_TYPE_UNKNOW;
@@ -273,7 +334,7 @@ int main( int argc, char** argv )
 		       &sourceIndex, 
 		       &cibleIndex, 
 		       &dataType, 
-		       &resolutionX, &resolutionY, &resolutionZ,
+		       &resolutionX, &resolutionY, &resolutionZ, &nbSamples,
 		       &minX, &maxX, 
 		       &minY, &maxY, 
 		       &minZ, &maxZ, 
@@ -289,6 +350,7 @@ int main( int argc, char** argv )
 			data = readData2D(sourceIndex);
 		} else {
 			// RANDOM DATA
+			data = generateRandomData2D(nbSamples, minX, maxX, minY, maxY, minS, maxS);
 		}
 		if (data != NULL) {
 			// RESOLUTION
@@ -297,7 +359,7 @@ int main( int argc, char** argv )
 	
 			multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
 			//multiQuadricInterpolation2D(EXTENDED_GRID,*data,&result);
-			
+	
 			ecrireFichierVTK2D(cibleIndex, result);
 			// ON FREE TOUT
 			freeData2D(data);
@@ -311,7 +373,7 @@ int main( int argc, char** argv )
 			data = readData3D(sourceIndex);
 		}else{
 			// RANDOM DATA
-			
+			data = generateRandomData3D(nbSamples, minX, maxX, minY, maxY, minZ, maxZ, minS, maxS);
 		}
 		if (data != NULL){
 			// RESOLUTION
