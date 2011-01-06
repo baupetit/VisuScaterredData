@@ -31,6 +31,8 @@ enum data_type
 	DATA_TYPE_2DPLAN, /* 2D plan */
 	DATA_TYPE_3D      /* 3D      */
 };
+typedef enum data_type DataType;
+
 
 /**
  * Matrix

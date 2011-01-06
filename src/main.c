@@ -28,7 +28,7 @@ void description(){
 	printf("./visu -cible cible.vtk -type 3D -bornes 0.51 0.89 1.18 2.21 0.0 1.0 0.0 1.0 -resolution 5 21 12\n\n");
 }
 
-void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, int *typeIndex,
+void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex, DataType *typeIndex,
 		   int *resolutionX, int *resolutionY, int *resolutionZ,
 		   real *minX, real *maxX, real *minY, real *maxY,
 		   real *minZ, real *maxZ, real *minS, real *maxS){
@@ -39,7 +39,7 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 
 	while (i<argc){
 		if (stringCompare(argv[i],"-source")){
-			if (*sourceIndex != -1){
+			if (*sourceIndex != NULL){
 				printf("ERREUR ARGUMENT - source est définie 2 fois ou +\n");
 				description();
 				exit(0);
@@ -50,9 +50,9 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				description();
 				exit(0);
 			}
-			*sourceIndex=i;
+			*sourceIndex=argv[i];
 		}else if (stringCompare(argv[i],"-cible")){
-			if (*cibleIndex != -1){
+			if (*cibleIndex != NULL){
 				printf("ERREUR ARGUMENT - cible est définie 2 fois ou +\n");
 				description();
 				exit(0);
@@ -63,11 +63,10 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				description();
 				exit(0);
 			}
-			*cibleIndex=i;
+			*cibleIndex=argv[i];
 		}else if (stringCompare(argv[i],"-type")){
-			if (*typeIndex != -1){
-				printf("ERREUR ARGUMENT - cible est définie 2 fois ou +\n");
-				description();
+			if (*typeIndex != DATA_TYPE_UNKNOW){
+				printf("ERREUR ARGUMENT - type est définie 2 fois ou +\n");
 				exit(0);
 			}
 			++i;
@@ -76,12 +75,19 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 				description();
 				exit(0);
 			}
-			*typeIndex=i;
-			if ((!stringCompare(argv[i],"2D")) &&  (!stringCompare(argv[i],"3D"))){
+			if (stringCompare(argv[i],"2D"))
+			{
+				*typeIndex = DATA_TYPE_2DPLAN;
+			}
+			else if (stringCompare(argv[i],"3D"))
+			{
+				*typeIndex = DATA_TYPE_3D;
+			}
+			else {
 				printf("ERREUR ARGUMENT - Le type de données doit être 2D ou 3D\n");
 				description();
 				exit(0);
-			}
+			} 
 		}else if (stringCompare(argv[i],"-resolution")){
 			if (*typeIndex == -1){
 				// Type de données non encore connu
@@ -252,11 +258,11 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 		++i;
 	}
 
-	if (*typeIndex==-1){
+	if (*typeIndex==DATA_TYPE_UNKNOW){
 		printf("ERREUR ARGUMENT - Veuillez préciser le type de données\n");
 		description();
 		exit(0);
-	}else if (*cibleIndex==-1){
+	}else if (*cibleIndex==NULL){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier cible\n");
 		description();
 		exit(0);
@@ -264,11 +270,11 @@ void checkArguments(int argc, char** argv, int *sourceIndex, int *cibleIndex, in
 		printf("ERREUR ARGUMENT - Veuillez préciser la résolution\n");
 		description();
 		exit(0);
-	}else if (!bornesDejaDefinies && (*sourceIndex==-1)){
+	}else if (!bornesDejaDefinies && (*sourceIndex==NULL)){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire\n");
 		description();
 		exit(0);
-	}else if (bornesDejaDefinies && (*sourceIndex!=-1)){
+	}else if (bornesDejaDefinies && (*sourceIndex!=NULL)){
 		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire, mais pas les 2 à la fois\n");
 		description();
 		exit(0);
@@ -295,9 +301,6 @@ int stringCompare(char *s1, char *s2){
 int main( int argc, char** argv )
 {
 	// PARSING DES ARGUMENTS
-	int sourceIndex=-1;
-	int cibleIndex=-1;
-	int typeIndex=-1;
 	int resolutionX, resolutionY, resolutionZ;
 	int nbSamples;
 	real minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
@@ -305,40 +308,51 @@ int main( int argc, char** argv )
 	// DUMMY
 	nbSamples = 10;
 
-	checkArguments(argc, argv, &sourceIndex, &cibleIndex, &typeIndex, &resolutionX, &resolutionY, &resolutionZ,
-		       &minX, &maxX, &minY, &maxY, &minZ, &maxZ, &minS, &maxS);
+	char *sourceIndex = NULL;
+	char *cibleIndex  = NULL; 
+	DataType dataType = DATA_TYPE_UNKNOW;
+
+	checkArguments(argc, argv, 
+		       &sourceIndex, 
+		       &cibleIndex, 
+		       &dataType, 
+		       &resolutionX, &resolutionY, &resolutionZ,
+		       &minX, &maxX, 
+		       &minY, &maxY, 
+		       &minZ, &maxZ, 
+		       &minS, &maxS);
 
 	// INIT
 	initRand();
 	
-	if (stringCompare(argv[typeIndex],"2D")){
+	if (dataType == DATA_TYPE_2DPLAN) {
 		ScaterredData2D *data=NULL;
 		SampledData2D result;
-		if (sourceIndex!=-1){
-			data = readData2D(argv[sourceIndex]);
-		}else{
+		if (sourceIndex!=NULL) {
+			data = readData2D(sourceIndex);
+		} else {
 			// RANDOM DATA
 			data = generateRandomData2D(nbSamples, minX, maxX, minY, maxY, minS, maxS);
 		}
-		if (data != NULL){
+		if (data != NULL) {
 			// RESOLUTION
 			result.width = resolutionX;
 			result.height = resolutionY;
 	
 			multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
 			//multiQuadricInterpolation2D(EXTENDED_GRID,*data,&result);
-
-			ecrireFichierVTK2D(argv[cibleIndex], result);
+	
+			ecrireFichierVTK2D(cibleIndex, result);
 			// ON FREE TOUT
 			freeData2D(data);
 			free(result.sampledValue);
 		}
-	}else{
+	} else {
 		// 3D
 		ScaterredData3D *data=NULL;
 		SampledData3D result;
-		if (sourceIndex!=-1){
-			data = readData3D(argv[sourceIndex]);
+		if (sourceIndex!=NULL){
+			data = readData3D(sourceIndex);
 		}else{
 			// RANDOM DATA
 			data = generateRandomData3D(nbSamples, minX, maxX, minY, maxY, minZ, maxZ, minS, maxS);
@@ -352,15 +366,13 @@ int main( int argc, char** argv )
 			multiQuadricInterpolation3D(DEFAULT_GRID,*data,&result);
 			//multiQuadricInterpolation3D(EXTENDED_GRID,*data,&result);
 			
-			ecrireFichierVTK3D(argv[cibleIndex], result);
+			ecrireFichierVTK3D(cibleIndex, result);
 			// ON FREE TOUT
 			freeData3D(data);
 			free(result.sampledValue);
 		}
 	}
 
-
-	
 	/*
 	// allocation
 	data = allocateData2D(4);
