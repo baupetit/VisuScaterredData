@@ -89,7 +89,7 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 				exit(0);
 			} 
 		}else if (stringCompare(argv[i],"-resolution")){
-			if (*typeIndex == -1){
+			if (*typeIndex == DATA_TYPE_UNKNOW){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
 				description();
@@ -125,7 +125,7 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 				exit(0);
 			}
 			//resolutionZ
-			if (stringCompare(argv[*typeIndex],"3D")){
+			if (*typeIndex == DATA_TYPE_3D){
 				++i;
 				if (i==argc){
 					printf("ERREUR ARGUMENT - ResolutionZ manquante\n");
@@ -140,7 +140,7 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 			}
 			resolutionDejaDefinie=1;
 		}else if (stringCompare(argv[i],"-bornes")){
-			if (*typeIndex == -1){
+			if (*typeIndex == DATA_TYPE_UNKNOW){
 				// Type de données non encore connu
 				printf("ERREUR ARGUMENT - Veuillez préciser le type de données avant la résolution ou les bornes\n");
 				description();
@@ -199,7 +199,7 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 				description();
 				exit(0);
 			}
-			if (stringCompare(argv[*typeIndex],"3D")){
+			if (*typeIndex == DATA_TYPE_3D){
 				// minZ
 				++i;
 				if (i==argc){
