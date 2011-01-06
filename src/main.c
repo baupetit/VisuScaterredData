@@ -29,13 +29,14 @@ void description(){
 }
 
 void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex, DataType *typeIndex,
-		   int *resolutionX, int *resolutionY, int *resolutionZ,
-		   real *minX, real *maxX, real *minY, real *maxY,
-		   real *minZ, real *maxZ, real *minS, real *maxS){
+		    int *resolutionX, int *resolutionY, int *resolutionZ, int *nbSamples,
+		    real *minX, real *maxX, real *minY, real *maxY,
+		    real *minZ, real *maxZ, real *minS, real *maxS){
 
 	int i=1;
 	int resolutionDejaDefinie=0;
 	int bornesDejaDefinies=0;
+	int echantillonsDejaDefini=0;
 
 	while (i<argc){
 		if (stringCompare(argv[i],"-source")){
@@ -67,6 +68,7 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 		}else if (stringCompare(argv[i],"-type")){
 			if (*typeIndex != DATA_TYPE_UNKNOW){
 				printf("ERREUR ARGUMENT - type est définie 2 fois ou +\n");
+				description();
 				exit(0);
 			}
 			++i;
@@ -87,7 +89,26 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 				printf("ERREUR ARGUMENT - Le type de données doit être 2D ou 3D\n");
 				description();
 				exit(0);
-			} 
+			}
+
+		}else if (stringCompare(argv[i],"-echantillons")){
+			if (echantillonsDejaDefini){
+				printf("ERREUR ARGUMENT - echantillons est défini 2 fois ou +\n");
+				description();
+				exit(0);
+			}
+			++i;
+			if (i==argc){
+				printf("ERREUR ARGUMENT - Nombre d'échatillons manquant\n");
+				description();
+				exit(0);
+			}
+			if (!convertToInt(argv[i], nbSamples)){
+				printf("ERREUR ARGUMENT - Echec de la conversion de %s en INT\n",argv[i]);
+				description();
+				exit(0);
+			}
+			echantillonsDejaDefini=1;
 		}else if (stringCompare(argv[i],"-resolution")){
 			if (*typeIndex == DATA_TYPE_UNKNOW){
 				// Type de données non encore connu
@@ -270,12 +291,12 @@ void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex
 		printf("ERREUR ARGUMENT - Veuillez préciser la résolution\n");
 		description();
 		exit(0);
-	}else if (!bornesDejaDefinies && (*sourceIndex==NULL)){
-		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire\n");
+	}else if ((*sourceIndex!=NULL) && (bornesDejaDefinies || echantillonsDejaDefini)){
+		printf("ERREUR ARGUMENT - Veuillez préciser :\nLe fichier source \nOU (pas les 2 à la fois) \nLes bornes et le nombre d'échantillons\n");
 		description();
 		exit(0);
-	}else if (bornesDejaDefinies && (*sourceIndex!=NULL)){
-		printf("ERREUR ARGUMENT - Veuillez préciser le fichier source ou les bornes pour une génération aléatoire, mais pas les 2 à la fois\n");
+	}else if ((!bornesDejaDefinies || !echantillonsDejaDefini) && (*sourceIndex==NULL)){
+		printf("ERREUR ARGUMENT - Veuillez préciser :\nLe fichier source \nOU (pas les 2 à la fois) \nLes bornes et le nombre d'échantillons\n");
 		description();
 		exit(0);
 	}
@@ -305,9 +326,6 @@ int main( int argc, char** argv )
 	int nbSamples;
 	real minX, maxX, minY, maxY, minZ, maxZ, minS, maxS;
 
-	// DUMMY
-	nbSamples = 10;
-
 	char *sourceIndex = NULL;
 	char *cibleIndex  = NULL; 
 	DataType dataType = DATA_TYPE_UNKNOW;
@@ -316,7 +334,7 @@ int main( int argc, char** argv )
 		       &sourceIndex, 
 		       &cibleIndex, 
 		       &dataType, 
-		       &resolutionX, &resolutionY, &resolutionZ,
+		       &resolutionX, &resolutionY, &resolutionZ, &nbSamples,
 		       &minX, &maxX, 
 		       &minY, &maxY, 
 		       &minZ, &maxZ, 
