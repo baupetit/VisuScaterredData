@@ -21,11 +21,12 @@ void description(){
 	printf("\t-cible : Chemin vers lequel écrire les données interpolées, le fichier doit avoir l'extension '.vtk'\n");
 	printf("\t-type : Type de données, chaine devant obligatoirement être égale à '2D' ou '3D'\n");
 	printf("\t-resolution : Nombre de points de la grille à calculer dans chaque direction, Z ne doit être précisé que si type vaut 3D\n");
-	printf("\t-bornes : Bornes à utiliser pour la génération de données aléatoires, Zmin et Zmax ne doivent être précisés que si type vaut 3D, Smin et Smax correspondent aux bornes sur la valeur des scalaires\n\n");
+	printf("\t-bornes : Bornes à utiliser pour la génération de données aléatoires, Zmin et Zmax ne doivent être précisés que si type vaut 3D, Smin et Smax correspondent aux bornes sur la valeur des scalaires\n");
+	printf("\t-echantillons : Nombre d'échantillons pour la génération de données aléatoires\n\n");
 
 	printf("##### EXEMPLES D'UTILISATION #####\n");
 	printf("./visu -source ../source.txt -cible cible.vtk -type 2D -resolution 15 25\n");
-	printf("./visu -cible cible.vtk -type 3D -bornes 0.51 0.89 1.18 2.21 0.0 1.0 0.0 1.0 -resolution 5 21 12\n\n");
+	printf("./visu -cible cible.vtk -type 3D -echantillons 10 -bornes 0.51 0.89 1.18 2.21 0.0 1.0 0.0 1.0 -resolution 5 21 12\n\n");
 }
 
 void checkArguments(int argc, char** argv, char **sourceIndex, char **cibleIndex, DataType *typeIndex,

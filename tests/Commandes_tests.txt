@@ -1,0 +1,11 @@
+Depuis le dossier build :
+
+TESTS SIMPLES 2D :
+
+./visu -type 2D -source ../tests/2D_carre_diagonal.txt -cible ../tests/resultats/2D_carre_diagonal.vtk -resolution 100 100
+./visu -type 2D -source ../tests/2D_carre_horizontal.txt -cible ../tests/resultats/2D_carre_horizontal.vtk -resolution 100 100
+./visu -type 2D -source ../tests/2D_carre_vertical.txt -cible ../tests/resultats/2D_carre_vertical.vtk -resolution 100 100
+
+TESTS COMPLEXES 2D :
+
+./visu -type 2D -source ../tests/2D_ensoleillement.txt -cible ../tests/resultats/2D_ensoleillement.vtk -resolution 100 100
