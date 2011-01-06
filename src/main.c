@@ -6,6 +6,7 @@
 
 #include "data.h"
 #include "matrix.h"
+#include "interpolate.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -344,31 +345,32 @@ int main( int argc, char** argv )
 	initRand();
 	
 	if (dataType == DATA_TYPE_2DPLAN) {
-		ScaterredData2D *data=NULL;
-		SampledData2D result;
+		ScaterredData2D *data   = NULL;
+		SampledData2D   *result = NULL;
 		if (sourceIndex!=NULL) {
 			data = readData2D(sourceIndex);
 		} else {
 			// RANDOM DATA
-			data = generateRandomData2D(nbSamples, minX, maxX, minY, maxY, minS, maxS);
+			//data = generateRandomData2D(nbSamples, minX, maxX, minY, maxY, minS, maxS);
+			data = generateSinCData2D(nbSamples, 1.0, minX, maxX, minY, maxY);
 		}
 		if (data != NULL) {
-			// RESOLUTION
-			result.width = resolutionX;
-			result.height = resolutionY;
-	
-			multiQuadricInterpolation2D(DEFAULT_GRID,*data,&result);
-			//multiQuadricInterpolation2D(EXTENDED_GRID,*data,&result);
-	
-			ecrireFichierVTK2D(cibleIndex, result);
-			// ON FREE TOUT
+			if( (result = allocateResult2D( resolutionX, resolutionY )) != NULL )
+			{
+				//multiQuadricInterpolation2D(DEFAULT_GRID,*data,result);
+				shepardInterpolation2D(DEFAULT_GRID,*data,result);
+				//multiQuadricInterpolation2D(EXTENDED_GRID,*data,result);
+				
+				ecrireFichierVTK2D(cibleIndex, *result);
+				// ON FREE TOUT
+				freeResult2D(result);
+			}
 			freeData2D(data);
-			free(result.sampledValue);
 		}
 	} else {
 		// 3D
 		ScaterredData3D *data=NULL;
-		SampledData3D result;
+		SampledData3D   *result=NULL;
 		if (sourceIndex!=NULL){
 			data = readData3D(sourceIndex);
 		}else{
@@ -377,17 +379,16 @@ int main( int argc, char** argv )
 		}
 		if (data != NULL){
 			// RESOLUTION
-			result.width = resolutionX;
-			result.height = resolutionY;
-			result.depth = resolutionZ;
-	
-			multiQuadricInterpolation3D(DEFAULT_GRID,*data,&result);
-			//multiQuadricInterpolation3D(EXTENDED_GRID,*data,&result);
-			
-			ecrireFichierVTK3D(cibleIndex, result);
+			if ((result=allocateResult3D( resolutionX, resolutionY, resolutionZ )) != NULL )
+			{
+				multiQuadricInterpolation3D(DEFAULT_GRID,*data,result);
+				//multiQuadricInterpolation3D(EXTENDED_GRID,*data,result);
+				
+				ecrireFichierVTK3D(cibleIndex, *result);
+				freeResult3D(result);
+			}
 			// ON FREE TOUT
 			freeData3D(data);
-			free(result.sampledValue);
 		}
 	}
 
