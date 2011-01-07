@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 // shepard ui coefficient
-#define SHEPARD_UI 4
+#define SHEPARD_UI 3
 
 // return the distance between two 2D sample
 inline static real dist2sample(const Data2D a, const Data2D b)
@@ -18,6 +18,15 @@ inline static real dist2sample(const Data2D a, const Data2D b)
 	const real xd = a.x - b.x;
 	const real yd = a.y - b.y;
 	return sqrt((xd*xd) + (yd*yd));
+}
+
+// return the distance between two 3D sample
+inline static real dist3sample(const Data3D a, const Data3D b)
+{
+	const real xd = a.x - b.x;
+	const real yd = a.y - b.y;
+	const real zd = a.z - b.z;
+	return sqrt((xd*xd) + (yd*yd) +(zd*zd));
 }
 
 // compute wi(x)
@@ -35,6 +44,26 @@ inline static real computeWINom(ScaterredData2D data, Data2D X, int i)
 			continue;
 		}
 		nom *= pow(dist2sample(X,data.scaterred[j]),SHEPARD_UI);
+	}
+
+	return nom;
+}
+
+// compute wi(x)
+inline static real computeWINom3(ScaterredData3D data, Data3D X, int i)
+{
+	real nom = 1;
+	// compute nom
+	const int nbSample = data.nbSamples;
+	int j;
+	for (j=0;j<nbSample;++j)
+	{
+		// ignore case j==i
+		if (j==i)
+		{
+			continue;
+		}
+		nom *= pow(dist3sample(X,data.scaterred[j]),SHEPARD_UI);
 	}
 
 	return nom;
@@ -80,6 +109,46 @@ inline static real sheparderp(ScaterredData2D data, Data2D X)
 	return result;
 }
 
+// return the shepard interpolation for the point X
+// => F(X)
+inline static real sheparderp3(ScaterredData3D data, Data3D X)
+{
+	real result = 0;
+	const int nbSample = data.nbSamples;
+	real denom = 0;
+	// compute denom
+	int k;
+	for (k=0;k<nbSample;++k)
+	{
+		int j;
+		real prod = 1;
+		for (j=0;j<nbSample;++j)
+		{
+			// ignore case j==k
+			if (j==k)
+			{
+				continue;
+			}
+			//printf("dist k X : %f \n",dist2sample(X,data.scaterred[k]));
+			//printf("d %f %f x %f %f\n",data.scaterred[j].x,data.scaterred[j].y,X.x,X.y);
+			prod *= pow(dist3sample(X,data.scaterred[j]),SHEPARD_UI);
+		}
+		denom += prod;
+	}
+	//printf("denom : %f\n",denom);
+	// compute F(X)
+	int i;
+	for (i=0;i<nbSample;++i)
+	{
+		// compute wi
+		real wiNom = computeWINom3(data,X,i);
+		//printf("Om NOm nom nom : %f\n",wiNom);
+		// add to result
+		result += data.scaterred[i].w * (wiNom/denom);
+	}
+	return result;
+}
+
 void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result, 
 			    real xmin, real xmax, real ymin, real ymax )
 {
@@ -88,20 +157,49 @@ void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* 
 	(*result).obb = data.obb;
 	
 	// pour chaque point de la grille
-	int i, j;
+	int line, column;
 	const real spacingX = (xmax - xmin) / (real)(result->width-1);
 	const real spacingY = (ymax - ymin) / (real)(result->height-1);
 	//printf("spacingX : %f, spacingY : %f, xmin : %f, ymin : %f",spacingX,spacingY,xmin,ymin);
-	for (i=0;i<result->height;++i)
+	for (line=0;line<result->height;++line)
 	{
-		for (j=0;j<result->width;++j)
+		for (column=0;column<result->width;++column)
 		{
-			Data2D x = { xmin + j*spacingX,
-				     ymin + i*spacingY,
+			Data2D x = { xmin + column*spacingX,
+				     ymin + line*spacingY,
 			             0 };
 			real val = sheparderp(data,x);
 			//printf("coordonées (%d,%d) = (%f,%f) = %f\n",i,j,x.x,x.y,val);
-			result->sampledValue[i*(result->width)+j] = val;
+			result->sampledValue[line*(result->width)+column] = val;
+		}
+	}
+}
+
+void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* result, 
+			    real xmin, real xmax, real ymin, real ymax, real zmin, real zmax )
+{
+	// On calcule la bounding box et on la recopie dans result
+	computeBoundingBox3D(type, &(data.obb), data.nbSamples, data.scaterred);
+	(*result).obb = data.obb;
+	
+	// pour chaque point de la grille
+	int column, line, slice;
+	const real spacingX = (xmax - xmin) / (real)(result->width-1);
+	const real spacingY = (ymax - ymin) / (real)(result->height-1);
+	const real spacingZ = (zmax - zmin) / (real)(result->depth-1);
+	for (slice=0;slice<result->depth;++slice)
+	{
+		for (line=0;line<result->height;++line)
+		{
+			for (column=0;column<result->width;++column)
+			{
+				Data3D x = { xmin + column*spacingX,
+					     ymin + line*spacingY,
+					     zmin + slice*spacingZ,
+					     0 };
+				real val = sheparderp3(data,x);
+				result->sampledValue[slice*(result->width)*(result->height)+ line*(result->width)+column] = val;
+			}
 		}
 	}
 }
@@ -206,7 +304,7 @@ void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledDat
 	
 	// Variables
 	int depth, line, column, indX, indY, indZ;
-	Matrix *H, *invH, *coefficients, *gridPoints, *gridScalars, *scalars;
+	Matrix *H = NULL, *invH = NULL, *coefficients = NULL, *gridPoints = NULL, *gridScalars = NULL, *scalars = NULL;
 
 	// CALCUL DE LA MATRICE des hk
 	H = allocateMatrix(data.nbSamples, data.nbSamples);
