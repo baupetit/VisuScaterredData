@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 // shepard ui coefficient
-#define SHEPARD_UI 3
+#define SHEPARD_UI 4
 
 // return the distance between two 2D sample
 inline static real dist2sample(const Data2D a, const Data2D b)
