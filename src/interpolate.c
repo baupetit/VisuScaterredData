@@ -149,12 +149,16 @@ inline static real sheparderp3(ScaterredData3D data, Data3D X)
 	return result;
 }
 
-void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result, 
-			    real xmin, real xmax, real ymin, real ymax )
+void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result)
 {
 	// On calcule la bounding box et on la recopie dans result
 	computeBoundingBox2D(type, &(data.obb), data.nbSamples, data.scaterred);
 	(*result).obb = data.obb;
+
+	real xmin = data.obb.xmin;
+	real xmax = data.obb.xmax;
+	real ymin = data.obb.ymin;
+	real ymax = data.obb.ymax;
 	
 	// pour chaque point de la grille
 	int line, column;
@@ -175,12 +179,19 @@ void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* 
 	}
 }
 
-void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* result, 
-			    real xmin, real xmax, real ymin, real ymax, real zmin, real zmax )
+void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* result)
 {
 	// On calcule la bounding box et on la recopie dans result
 	computeBoundingBox3D(type, &(data.obb), data.nbSamples, data.scaterred);
 	(*result).obb = data.obb;
+	
+	real xmin = data.obb.xmin;
+	real xmax = data.obb.xmax;
+	real ymin = data.obb.ymin;
+	real ymax = data.obb.ymax;
+	real zmin = data.obb.zmin;
+	real zmax = data.obb.zmax;
+	
 	
 	// pour chaque point de la grille
 	int column, line, slice;

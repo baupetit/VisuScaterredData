@@ -11,11 +11,9 @@
 #include "matrix.h"
 
 /* shepard interpolation */
-void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result,
-			    real xmin, real xmax, real ymin, real ymax );
+void shepardInterpolation2D(GridType type, ScaterredData2D data, SampledData2D* result);
 
-void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* result,
-			    real xmin, real xmax, real ymin, real ymax, real zmin, real zmax  );
+void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* result);
 
 /* Multi Quadric interpolation */
 void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledData2D *result);
