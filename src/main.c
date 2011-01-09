@@ -359,9 +359,9 @@ int main( int argc, char** argv )
 		if (data != NULL) {
 			if( (result = allocateResult2D( resolutionX, resolutionY )) != NULL )
 			{
-				//multiQuadricInterpolation2D(DEFAULT_GRID,*data,result);
+				multiQuadricInterpolation2D(DEFAULT_GRID,*data,result);
 				//multiQuadricInterpolation2D(EXTENDED_GRID,*data,result);
-				shepardInterpolation2D(DEFAULT_GRID,*data,result);
+				//shepardInterpolation2D(DEFAULT_GRID,*data,result);
 				
 				ecrireFichierVTK2D(cibleIndex, *result);
 				freeResult2D(result);
@@ -383,9 +383,9 @@ int main( int argc, char** argv )
 			// RESOLUTION
 			if ((result=allocateResult3D( resolutionX, resolutionY, resolutionZ )) != NULL )
 			{
-				//multiQuadricInterpolation3D(DEFAULT_GRID,*data,result);
+				multiQuadricInterpolation3D(DEFAULT_GRID,*data,result);
 				//multiQuadricInterpolation3D(EXTENDED_GRID,*data,result);
-				shepardInterpolation3D(DEFAULT_GRID,*data,result);
+				//shepardInterpolation3D(DEFAULT_GRID,*data,result);
 				
 				ecrireFichierVTK3D(cibleIndex, *result);
 				freeResult3D(result);
