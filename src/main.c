@@ -377,14 +377,16 @@ int main( int argc, char** argv )
 			data = readData3D(sourceIndex);
 		}else{
 			// RANDOM DATA
-			data = generateRandomData3D(nbSamples, minX, maxX, minY, maxY, minZ, maxZ, minS, maxS);
+			//data = generateRandomData3D(nbSamples, minX, maxX, minY, maxY, minZ, maxZ, minS, maxS);
+			data = generateSinCData3D(nbSamples, 1.0, minX, maxX, minY, maxY, minZ, maxZ);
 		}
 		if (data != NULL){
 			// RESOLUTION
 			if ((result=allocateResult3D( resolutionX, resolutionY, resolutionZ )) != NULL )
 			{
-				multiQuadricInterpolation3D(DEFAULT_GRID,*data,result);
+				//multiQuadricInterpolation3D(DEFAULT_GRID,*data,result);
 				//multiQuadricInterpolation3D(EXTENDED_GRID,*data,result);
+				shepardInterpolation3D(DEFAULT_GRID,*data,result,minX,maxX,minY,maxY,minZ,maxZ);
 				
 				ecrireFichierVTK3D(cibleIndex, *result);
 				freeResult3D(result);
