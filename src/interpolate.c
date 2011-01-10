@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define max(a,b) ((a) > (b) ? (a) : (b))
+
+
 // shepard ui coefficient
 #define SHEPARD_UI 4
 
@@ -218,24 +221,11 @@ void shepardInterpolation3D(GridType type, ScaterredData3D data, SampledData3D* 
 void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledData2D *result)
 {
 	// On calcule la bounding box et on la recopie dans result
-	computeBoundingBox2D(type, &(data.obb), data.nbSamples, data.scaterred);
-	(*result).obb = data.obb;
+	computeBoundingBox2D(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
+	computeBoundingBox2D(type, &(result->obb), data.nbSamples, data.scaterred);
 	
-	/*
-	// CALCUL DE R : CRITERE DE FRANKE
-	real R = ;
-	int i,j;
-	for (i = 0; i<data.nbSamples-1; ++i){
-		for (j = i+1; j<data.nbSamples; ++j){
-			real D = sqrt(pow(data.scaterred[i].x-data.scaterred[j].x,2)+pow(data.scaterred[i].y-data.scaterred[j].y,2));
-			
-		}
-	}
-	*/
-
-	// DUMMY
-
-	real R = (real)1;
+	// CALCUL DE R : CRITERE DE STEAD
+	real R = sqrt(max(result->obb.xmax-result->obb.xmin,result->obb.ymax-result->obb.ymin)/((real)10));
 	
 	// Variables
 	int line, column, indX, indY;
@@ -279,7 +269,7 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 			for (column = 0; column < data.nbSamples; ++column){
 				Data2D xj = data.scaterred[column];
 				(*gridPoints).values[(indY*(*result).width+indX)*data.nbSamples+column] = 
-					sqrt(R*R + (pointX - xj.x) * (pointX - xj.x) + 
+					sqrt(R + (pointX - xj.x) * (pointX - xj.x) + 
 					     (pointY - xj.y) * (pointY - xj.y));
 			}
 		}
@@ -307,14 +297,14 @@ void multiQuadricInterpolation2D(GridType type, ScaterredData2D data, SampledDat
 void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledData3D *result)
 {
 	// On calcule la bounding box et on la recopie dans result
-	computeBoundingBox3D(type, &(data.obb), data.nbSamples, data.scaterred);
-	(*result).obb = data.obb;
-
-	// DUMMY
-	real R = (real)1;
+	computeBoundingBox3D(DEFAULT_GRID, &(data.obb), data.nbSamples, data.scaterred);
+	computeBoundingBox3D(type, &(result->obb), data.nbSamples, data.scaterred);
+	
+	// CALCUL DE R : CRITERE DE STEAD
+	real R = sqrt(max(result->obb.xmax-result->obb.xmin,max(result->obb.ymax-result->obb.ymin,result->obb.zmax-result->obb.zmin))/((real)10));
 	
 	// Variables
-	int depth, line, column, indX, indY, indZ;
+	int slice, line, column, indX, indY, indZ;
 	Matrix *H = NULL, *invH = NULL, *coefficients = NULL, *gridPoints = NULL, *gridScalars = NULL, *scalars = NULL;
 
 	// CALCUL DE LA MATRICE des hk
@@ -325,7 +315,7 @@ void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledDat
 			Data3D xj = data.scaterred[column];
 
 			(*H).values[line*(*H).width+column] = 
-				sqrt(R*R + 
+				sqrt(R + 
 				     (xi.x - xj.x) * (xi.x - xj.x) +
 				     (xi.y - xj.y) * (xi.y - xj.y) +
 				     (xi.z - xj.z) * (xi.z - xj.z));
@@ -337,7 +327,7 @@ void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledDat
 	// On recopie les valeurs d'interpolation dans une matrice
 	scalars = allocateMatrix(1, data.nbSamples);
 	for (line = 0; line < data.nbSamples; ++line){
-		(*scalars).values[line] = data.scaterred[line].z;
+		(*scalars).values[line] = data.scaterred[line].w;
 	}
 	
 	// On calcule les coefficient alphai
@@ -345,16 +335,16 @@ void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledDat
 
 	// On calcule les valeurs sur la grille régulière
 	gridPoints = allocateMatrix(data.nbSamples, (result->depth)*(result->width)*(result->height));
-	for (indZ = 0; indZ < result-> depth; ++indZ){
+	for (indZ = 0; indZ < (result->depth); ++indZ){
 		real pointZ = data.obb.zmin + (data.obb.zmax-data.obb.zmin)*indZ/(result->depth-1);
-		for (indY = 0; indY < result->height; ++indY){
+		for (indY = 0; indY < (result->height); ++indY){
 			real pointY = data.obb.ymin + (data.obb.ymax-data.obb.ymin)*indY/((*result).height-1);
 			for (indX = 0; indX < (*result).width; ++indX){
 				real pointX = data.obb.xmin + (data.obb.xmax-data.obb.xmin)*indX/((*result).width-1);
 				for (column = 0; column < data.nbSamples; ++column){
 					Data3D xj = data.scaterred[column];
 					gridPoints->values[(indZ*(result->width)*(result->height)+indY*(result->width)+indX)*data.nbSamples+column] = 
-						sqrt(R*R + (pointX - xj.x) * (pointX - xj.x) + (pointY - xj.y) * (pointY - xj.y) + (pointZ - xj.z) * (pointZ - xj.z));
+						sqrt(R + (pointX - xj.x) * (pointX - xj.x) + (pointY - xj.y) * (pointY - xj.y) + (pointZ - xj.z) * (pointZ - xj.z));
 				}
 			}
 		}
@@ -363,11 +353,11 @@ void multiQuadricInterpolation3D(GridType type, ScaterredData3D data, SampledDat
 
 	// On recopie les valeurs calculées dans result
 	//result->sampledValue = malloc((result->width)*(result->height)*(result->depth)*sizeof(real));
-	for (depth = 0; depth < result->depth; ++depth){
+	for (slice = 0; slice < result->depth; ++slice){
 		for (line = 0; line < result->height; ++line){
 			for (column = 0; column < result->width; ++column){
-				result->sampledValue[depth*(result->width)*(result->height)+line*(result->width)+column] = 
-					gridScalars->values[depth*(result->width)*(result->height)+line*(result->width)+column];
+				result->sampledValue[slice*(result->width)*(result->height)+line*(result->width)+column] = 
+					gridScalars->values[slice*(result->width)*(result->height)+line*(result->width)+column];
 			}
 		}
 	}
