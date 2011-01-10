@@ -272,17 +272,18 @@ Nombre echantillons & Résolution & Temps Shepard & Temps Hardy \\
 \hline
 44 & 100.100 (2D) & 4,2 s & \\
 100 & 100.100 (2D) & 22,5 s & \\
-100 & 100.100.100 (3D) & & \\
-50 & 100.100.100 (3D) & & \\
+100 & 100.100.100 (3D) & 39 min 49 s & \\
+50 & 100.100.100 (3D) & 9 min 46 s& \\
 100 & 50.50.50 (3D) & & \\
 \hline
 \end{tabular}
 
 \subsubsection{Précision de l'interpolation}
 \label{subsec:precision_interpolation}
-Au vu des cas de tests que nous avons utilisé, il apparait que la méthode de Hardy est bien meilleure en général que la méthode de Shepard car elle évite d'avoir des 'flat' points. Le seul avantage qu'il pourrait y avoir à utiliser la méthode de Shepard serait dans le cas où l'on aurait $R<<N^{2}$, car la perte en précision serait justifiée par un gain en temps de calcul important.
+Au vu des cas de tests que nous avons utilisé, il apparait que la méthode de Hardy est bien meilleure en général que la méthode de Shepard car elle évite d'avoir des 'flat' points. Un avantage qu'il pourrait y avoir à utiliser la méthode de Shepard serait dans le cas où l'on aurait $R<<N^{2}$, car la perte en précision serait justifiée par un gain en temps de calcul important. Un autre cas où la méthode de Shepard pourrait s'avérer utile serait quand le conditionnement de la matrice de hardy serait mauvais et que donc le résultat d'inversion serait faux, par chance cela ne s'est pas présenté pour nous.
 
 \section{Conclusion}
 \label{sec:conclusion}
+Dans ce document nous avons expliqué comment nous avons implémenté deux méthodes d'interpolation de données, ces deux méthodes étant celle de Shepard et les Multiquadriques de Hardy. Après observation des résultats, il apparait que la méthode de Hardy est très souvent meilleure que celle de Shepard car elle est plus performante en temps de calcul et donne de meilleurs résultats. Cependant, il existe des cas où la méthode de Hardy est inapplicable car l'inversion de matrice devient fausse pour un grand nombre d'échantillons de données en entrée. Pour ces cas là il serait intéressant d'implémenter une version améliorée de la méthode de Shepard (comme modified quadratic Shepard) qui soit certes moins précise, mais qui puisse donner des résultats à peu près corrects là où la méthode de Hardy échoue complètement.
 
 \end{document}
