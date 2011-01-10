@@ -264,26 +264,26 @@ Enfin, nous avons été chercher les valeurs moyennes de température minimale s
 
 \subsubsection{Temps de calcul}
 \label{subsec:temps_calcul}
-Nous avons effectué une comparaison des performances de la méthode de Shepard et Hardy sur plusieurs cas tests. Voici les résultats que nous obtenons :
-
+Nous avons effectué une comparaison des performances de la méthode de Shepard et Hardy sur plusieurs cas tests. Les résultats que nous avons obtenu sont répertoriées dans le tableau ci-après. L'on peut remarquer sans grande difficulté que la méthode de Hardy est bien meilleure en temps de calcul sur nos exemples. \\On vérifie au passage la complexité de la méthode de Hardy en remarquant que 3,2 secondes font environ 2 fois 1,8 secondes entre les 3è et 4è lignes (R = 1000000, N = 50 ou 100) ce qui correspond à peu près à ce que la théorie affirme.\\
+ 
 \begin{tabular}{|c|c|c|c|}
 \hline
 Nombre echantillons & Résolution & Temps Shepard & Temps Hardy \\
 \hline
-44 & 100.100 (2D) & 4,2 s & \\
-100 & 100.100 (2D) & 22,5 s & \\
-100 & 100.100.100 (3D) & 39 min 49 s & \\
-50 & 100.100.100 (3D) & 9 min 46 s& \\
-100 & 50.50.50 (3D) & & \\
+44 & 100.100 (2D) & 4,2 s & 0,03 s \\
+100 & 100.100 (2D) & 22,5 s & 0,06 s \\
+100 & 100.100.100 (3D) & 39 min 49 s & 3,2 s \\
+50 & 100.100.100 (3D) & 9 min 46 s & 1,8 s \\
+100 & 50.50.50 (3D) & 4 min 56 s & 0,4 s \\
 \hline
 \end{tabular}
 
 \subsubsection{Précision de l'interpolation}
 \label{subsec:precision_interpolation}
-Au vu des cas de tests que nous avons utilisé, il apparait que la méthode de Hardy est bien meilleure en général que la méthode de Shepard car elle évite d'avoir des 'flat' points. Un avantage qu'il pourrait y avoir à utiliser la méthode de Shepard serait dans le cas où l'on aurait $R<<N^{2}$, car la perte en précision serait justifiée par un gain en temps de calcul important. Un autre cas où la méthode de Shepard pourrait s'avérer utile serait quand le conditionnement de la matrice de hardy serait mauvais et que donc le résultat d'inversion serait faux, par chance cela ne s'est pas présenté pour nous.
+Au vu des cas de tests que nous avons utilisé, il apparait que la méthode de Hardy est bien meilleure en général que la méthode de Shepard car elle évite d'avoir des 'flat' points. \\Un avantage qu'il pourrait y avoir à utiliser la méthode de Shepard serait dans le cas où l'on aurait $R<<N^{2}$, car la perte en précision serait justifiée par un gain en temps de calcul important. Un autre cas où la méthode de Shepard pourrait s'avérer utile serait quand le conditionnement de la matrice de hardy serait mauvais et que donc le résultat d'inversion serait faux, par chance cela ne s'est pas présenté pour nous.
 
 \section{Conclusion}
 \label{sec:conclusion}
-Dans ce document nous avons expliqué comment nous avons implémenté deux méthodes d'interpolation de données, ces deux méthodes étant celle de Shepard et les Multiquadriques de Hardy. Après observation des résultats, il apparait que la méthode de Hardy est très souvent meilleure que celle de Shepard car elle est plus performante en temps de calcul et donne de meilleurs résultats. Cependant, il existe des cas où la méthode de Hardy est inapplicable car l'inversion de matrice devient fausse pour un grand nombre d'échantillons de données en entrée. Pour ces cas là il serait intéressant d'implémenter une version améliorée de la méthode de Shepard (comme modified quadratic Shepard) qui soit certes moins précise, mais qui puisse donner des résultats à peu près corrects là où la méthode de Hardy échoue complètement.
+Dans ce document nous avons expliqué comment nous avons implémenté deux méthodes d'interpolation de données, ces deux méthodes étant celle de Shepard et les Multiquadriques de Hardy.\\Après observation des résultats, il apparait que la méthode de Hardy est très souvent meilleure que celle de Shepard car elle est plus performante en temps de calcul et donne de meilleurs résultats.\\Cependant, il existe des cas où la méthode de Hardy est inapplicable car l'inversion de matrice devient fausse pour un grand nombre d'échantillons de données en entrée. Pour ces cas là il serait intéressant d'implémenter une version améliorée de la méthode de Shepard (comme modified quadratic Shepard) qui soit certes moins précise, mais qui puisse donner des résultats à peu près corrects là où la méthode de Hardy échoue complètement.
 
 \end{document}
