@@ -9,7 +9,6 @@ TESTS SIMPLES 2D :
 TESTS COMPLEXES 2D :
 
 ./visu -type 2D -source ../tests/2D_ensoleillement.txt -cible ../tests/resultats/2D_ensoleillement.vtk -resolution 100 100
-./visu -type 2D -source ../tests/2D_Tmin.txt -cible ../tests/resultats/2D_Tmin.vtk -resolution 100 100
 ./visu -type 2D -echantillons 100 -bornes -1.0 1.0 -1.0 1.0 -1.0 1.0 -cible ../tests/resultats/2D_sinc.vtk -resolution 100 100
 
 
