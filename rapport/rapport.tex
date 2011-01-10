@@ -62,6 +62,11 @@ Une des étapes cruciales pour l'observation d'un phénomène a toujours été d
 
 \subsection{Description}
 \label{subsec:shepard_description}
+Le principe de cette méthode est de considérer que la valeur interpolée en une position de l'espace est une somme pondérée des valeurs des échantillons en entrée.
+$$F(x)=\sum_{i=1}^{N} \omega_{i}(x).f_{i}$$
+Chaque fonction de pondération $\omega_{i}$ est définie de la façon suivante :
+$$\omega_{i}(x)=\frac{\frac{1}{[d_{i}(x)]^{\mu_{i}}}}{\sum_{j=1}^{N}\frac{1}{[d_{j}(x)]^{\mu_{j}}}} ~~~~~~ d_{i}(x)=||x-x_{i}||_{2}~~~,~~~\mu_{i}\ge1$$
+
 
 \subsection{Complexité}
 \label{subsec:shepard_complexite}
