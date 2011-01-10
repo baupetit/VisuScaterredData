@@ -239,24 +239,48 @@ ScaterredData3D* generateSinCData3D(int nbSamples, real factor,
 
 \subsection{Validation de l'implémentation}
 \label{subsec:validation_implementation}
-\textbf{Validation de l'implémentation de Shepard}
-
-\textbf{Validation de l'implémentation de Hardy}
-Pour les mêmes fichiers en entrée que pour les tests de validation avec Shepard, nous obtenons les images suivantes :
-
+\textbf{Validation de l'implémentation de Shepard}\\
+\textbf{Validation de l'implémentation de Hardy}\\
+Pour les mêmes fichiers en entrée que pour les tests de validation avec Shepard, nous obtenons les images ci dessous. Nous pouvons observer que les résultats d'interpolation semblent être excellents, il n'y a notamment pas les erreurs présentes sur l'interpolation diagonale de Shepard.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.9\textwidth]{images/multiquadric/tests_simples_mq.png}
+\caption{Résultats des cas de tests simples avec méthode de Hardy}
+\end{figure}
 
 
 \subsection{Tests Complexes}
 \label{subsec:tests_complexes}
+Nous avons par la suite observé les résultats d'interpolation de ces deux méthodes sur des cas de tests plus poussés. Nous avons commencé par relever des données sur l'ensoleillement de plusieurs villes de France sur internet, voici les résultats que nous obtenons avec les 2 méthodes :
+
+Un autre test 2D que nous avons effectué est celui du sinus cardinal que nous avions implémenté, les résultats sont bons quand on met assez d'échantillons, mais encore une fois, la méthode de Shepard laisse des artefacts qui dégradent la qualité de l'interpolation (flat points).
+
+Ensuite, nous avons effectué le test des sinus cardinal en 3D pour les deux méthodes, on peut encore une fois observer les flat points de la méthode de Shepard et une très bonne approximation avec la méthode de Hardy.
+
+Enfin, nous avons été chercher les valeurs moyennes de température minimale sur 103 villes de France sur 11 mois de l'année 2010 et avons effectué l'interpolation avec la méthode de Hardy. Quand nous avons voulu essayer de pratiquer la méthode de Shepard avec ces données, nous avons du abandonner car le résultat n'était toujours pas sorti 4 heures après le lancement de l'application. Voici ce que nous avons obtenu avec la méthode de Hardy :
 
 \subsection{Comparaison des deux méthodes}
 \label{subsec:comparaison_methodes}
 
 \subsubsection{Temps de calcul}
 \label{subsec:temps_calcul}
+Nous avons effectué une comparaison des performances de la méthode de Shepard et Hardy sur plusieurs cas tests. Voici les résultats que nous obtenons :
+
+\begin{tabular}{|c|c|c|c|}
+\hline
+Nombre echantillons & Résolution & Temps Shepard & Temps Hardy \\
+\hline
+44 & 100.100 (2D) & 4,2 s & \\
+100 & 100.100 (2D) & 22,5 s & \\
+100 & 100.100.100 (3D) & & \\
+50 & 100.100.100 (3D) & & \\
+100 & 50.50.50 (3D) & & \\
+\hline
+\end{tabular}
 
 \subsubsection{Précision de l'interpolation}
 \label{subsec:precision_interpolation}
+Au vu des cas de tests que nous avons utilisé, il apparait que la méthode de Hardy est bien meilleure en général que la méthode de Shepard car elle évite d'avoir des 'flat' points. Le seul avantage qu'il pourrait y avoir à utiliser la méthode de Shepard serait dans le cas où l'on aurait $R<<N^{2}$, car la perte en précision serait justifiée par un gain en temps de calcul important.
 
 \section{Conclusion}
 \label{sec:conclusion}
