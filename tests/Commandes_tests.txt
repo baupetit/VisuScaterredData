@@ -24,4 +24,3 @@ TESTS COMPLEXES 3D :
 
 ./visu -type 3D -echantillons 100 -bornes -1.0 1.0 -1.0 1.0 -1.0 1.0 -1.0 1.0 -cible ../tests/resultats/3D_sinc.vtk -resolution 100 100 100
 ./visu -type 3D -source ../tests/3D_Tmin.txt -cible ../tests/resultats/3D_Tmin.vtk -resolution 70 70 70
-./visu -type 3D -source ../tests/3D_precipitations.txt -cible ../tests/resultats/3D_precipitations.vtk -resolution 70 70 70
