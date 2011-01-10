@@ -1,56 +1,39 @@
 TP      : Visualisation scientifique
 AUTHORS : Benjamin Aupetit, Nicolas Cousin
 
-Sources:
+HOW TO USE THIS PROGRAM:
+------------------------
+
+to use this program, you must compile it.
+It require cmake (>=2.6).
+
+Standard command to build from the sources :
+$> mkdir build
+$> cd build 
+$> cmake ../src
+$> make
+
+The application should be build by now.
+To use it simply type in : 
+$> ./visu args
+The option will be printed if you launch the program
+without arguments :
+$> ./visu 
+
+
+Sources: (directory : src)
+--------------------------
    main.c         : base program, call necessary function
    interpolate.c  : interpolation functions
    output.c       : write data to vtk files
    data.c         : generate data set, enventually read them from files
    types.h        : types used by the application
 
+Test (directory : test):
+------------------------
+   In this directory you'll find the test files used to validate 
+   and compare the methods we have implemented.
 
-# SOUTENANCE + INFOS DIVERSES #
-Projet à rendre pour le 11 janvier + soutenance qui suivra
+   Command use to run our test are in the file Commandes_test.txt 
+   (executed from build)
 
-http://evasion.inrialpes.fr/Membres/Georges-Pierre.Bonneau/ProjetVisualisationENSIMAG.htm
-
-Mail rendu de rapport :
-
-Objet : [VISU_ENSIMAG]
-
-Attachement : pdf rapport + archive du code
-
-Corps : Projet réalisé par Nom1, Nom2
-
-Georges-Pierre.Bonneau@inria.fr
-
-Contenu du rapport :
-
-Présentation de la méthode d'interpolation : explication, implémentation
-Présentation de cas de tests simples + complexes
-Evaluation de la complexité algorithmique de la solution utilisée
-Illustrations de diverses possibilités pour visualiser les données avec Paraview
-
-
-Ce qu'on veut : Interpolation de données + Scalaire
-On a des points dans l'espace, et on veut une courbe / surface qui passe par les points et reproduit le même scalaire
-
-f 		: R^3 -> R
-(x,y,z)		: f(x,y,z) = scalaire 
-
-Type de sortie : .vtk ?
-
-
-Choix de la méthode :
-
-PEUT ETRE :
-
-Multi Quadratic (mais polynome donc peut être pas une approximation très belle)
-Normalized Networks ?
-Multi-Quadric p58
-
-NON :
-
-Hermite (car il faut spécifier n dérivées en plus de n points)
-Shepard (car 'flat points')
-Spline (car déjà fait en surface en 2A)
