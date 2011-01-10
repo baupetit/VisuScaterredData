@@ -197,7 +197,7 @@ Nous avons bien sûr veillé à ce que notre implémentation respecte la complex
 
 \subsection{Visualisation de données avec Paraview}
 \label{subsec:paraview}
-Paraview est un logiciel permettant la visualisation de données sous forme d'une grille régulière. Il offre de nombreuses possibilités d'affichage, comme l'affichage de surfaces, de coupes d'un volume 3D, du volume 3D en transparence, ... Il permet en outre de customiser la carte de couleur utilisée pour représenter les valeurs scalaires associées aux points. Afin de pouvoir visualiser les données avec paraview, nous écrivons la grille résultat de l'interpolation dans un fichier portant l'extension 'vtk' que nous pouvons ensuite ouvrir depuis le logiciel. Cette fonction est présente dans le fichier data.c.
+Paraview est un logiciel permettant la visualisation de données sous forme d'une grille régulière. Il offre de nombreuses possibilités d'affichage, comme l'affichage de surfaces, de coupes d'un volume 3D, du volume 3D en transparence, ... Il permet en outre de customiser la carte de couleur utilisée pour représenter les valeurs scalaires associées aux points. Afin de pouvoir visualiser les données avec paraview, nous écrivons la grille résultat de l'interpolation dans un fichier portant l'extension 'vtk' que nous pouvons ensuite ouvrir depuis le logiciel. Cette fonction est présente dans le fichier output.c.
 \begin{verbatim}
 void ecrireFichierVTK3D(char *filePath, SampledData3D data);
 \end{verbatim}
